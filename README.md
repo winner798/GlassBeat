@@ -4,7 +4,12 @@
 
 开源、离线优先、可自定义的 Android 玻璃风格音乐播放器。
 
-1.0.6：统一卡片列表分层、当前播放标记及圆角玻璃按钮，保留弹性滑动导航、立体玻璃和 Android 13+ 背景边缘折射。[实现与参考源码](docs/GLASS.md)。
+1.0.7：底部导航采用更轻的滑动高亮，减弱厚描边与反光；新设计水蓝/淡紫玻璃音符图标，支持自适应裁切和主题单色版本。[图标资源](docs/ICON.md) · [玻璃实现](docs/GLASS.md)。
+
+<p>
+  <img src="docs/screenshots/icon-rounded-square.png" width="80" alt="圆角方形图标预览" />
+  <img src="docs/screenshots/icon-circle.png" width="80" alt="圆形图标预览" />
+</p>
 
 **Kotlin · Jetpack Compose · Media3 · Room · DataStore · Haze**
 
