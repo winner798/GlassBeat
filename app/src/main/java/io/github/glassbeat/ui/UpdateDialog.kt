@@ -31,7 +31,7 @@ fun AppUpdateDialog(model: LibraryModel) {
     }
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
         if (context.packageManager.canRequestPackageInstalls()) install()
-        else model.message = "尚未允许 GlassBeat 安装更新。你可以重新点击安装，或从仓库发布页下载 APK。"
+        else model.message = "尚未允许 FavSoda 安装更新。你可以重新点击安装，或从仓库发布页下载 APK。"
     }
     if (state == UpdateState.Idle) return
     val busy = state == UpdateState.Checking || state is UpdateState.Downloading
@@ -60,7 +60,7 @@ fun AppUpdateDialog(model: LibraryModel) {
             is UpdateState.Ready -> TextButton(onClick = {
                 if (context.packageManager.canRequestPackageInstalls()) install()
                 else try { permission.launch(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:${context.packageName}"))) }
-                catch (_: Exception) { model.message = "无法打开安装权限设置，请从系统设置允许 GlassBeat 安装应用。" }
+                catch (_: Exception) { model.message = "无法打开安装权限设置，请从系统设置允许 FavSoda 安装应用。" }
             }) { Text("安装更新") }
             UpdateState.Checking, is UpdateState.Downloading -> TextButton(onClick = model.updater::cancel) { Text("取消") }
             else -> TextButton(onClick = model.updater::dismiss) { Text("知道了") }

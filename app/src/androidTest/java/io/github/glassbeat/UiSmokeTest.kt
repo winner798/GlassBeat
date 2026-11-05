@@ -25,7 +25,7 @@ class UiSmokeTest {
     @Before fun seed() = runBlocking {
         audio = File(context.filesDir, "ui-sample.mp4")
         InstrumentationRegistry.getInstrumentation().context.assets.open("test-video.mp4").use { source -> audio.outputStream().use { source.copyTo(it) } }
-        repo.dao.save(Song("ui-test", "First Light", audio.absolutePath, "GlassBeat · Test Tone", 1500))
+        repo.dao.save(Song("ui-test", "First Light", audio.absolutePath, "FavSoda · Test Tone", 1500))
     }
     @After fun clean() = runBlocking { repo.dao.delete("ui-test"); audio.delete(); Unit }
     private fun screenshot(name: String) {
@@ -34,7 +34,7 @@ class UiSmokeTest {
         File(directory, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
     }
     @Test fun navigationThemeAndImportAreUsable() {
-        compose.onNodeWithText("GlassBeat").assertIsDisplayed()
+        compose.onNodeWithText("FavSoda").assertIsDisplayed()
         compose.waitUntil(5000) { compose.onAllNodesWithText("First Light").fetchSemanticsNodes().isNotEmpty() }
         screenshot("library")
         compose.onNodeWithText("外观").performClick()

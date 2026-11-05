@@ -16,7 +16,7 @@ internal object GitHubReleaseNetwork {
             connection.useCaches = false
             connection.setRequestProperty("Cache-Control", "no-cache")
             connection.instanceFollowRedirects = false; connection.connectTimeout = 15000; connection.readTimeout = 20000
-            connection.setRequestProperty("User-Agent", "GlassBeat-Android")
+            connection.setRequestProperty("User-Agent", "FavSoda-Android")
             connection.setRequestProperty("Accept", if (api) "application/vnd.github+json" else "application/octet-stream")
             connection.setRequestProperty("X-GitHub-Api-Version", "2022-11-28")
             val code = connection.responseCode

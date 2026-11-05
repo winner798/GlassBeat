@@ -31,7 +31,7 @@ import io.github.glassbeat.data.*
 import java.io.File
 
 @Composable
-fun GlassBeatApp(model: LibraryModel, player: MediaController?) {
+fun FavSodaApp(model: LibraryModel, player: MediaController?) {
     val songs by model.songs.collectAsStateWithLifecycle()
     val playlists by model.playlists.collectAsStateWithLifecycle()
     val memberships by model.memberships.collectAsStateWithLifecycle()
@@ -99,7 +99,7 @@ fun GlassBeatApp(model: LibraryModel, player: MediaController?) {
                         } else {
                             Row(Modifier.padding(top = 22.dp, bottom = 18.dp), verticalAlignment = Alignment.CenterVertically) {
                                 Column(Modifier.weight(1f)) {
-                                    Text(if (tab == 0) "GlassBeat" else if (tab == 1) selectedPlaylist?.name ?: "你的歌单" else "外观工作室", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
+                                    Text(if (tab == 0) "FavSoda" else if (tab == 1) selectedPlaylist?.name ?: "你的歌单" else "外观工作室", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
                                     Text(if (tab == 2) "让音乐拥有你的样子" else "离线收藏 · 自由聆听", color = colors.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
                                 }
                                 if (selectedPlaylist != null && tab == 1) IconButton(onClick = { playlistId = null }) { Icon(Icons.Rounded.ArrowBack, "返回歌单") }
@@ -201,7 +201,7 @@ fun GlassBeatApp(model: LibraryModel, player: MediaController?) {
                 if (player != null) for (i in 0 until player.mediaItemCount) if (player.getMediaItemAt(i).mediaId == song.id) player.replaceMediaItem(i, song.copy(title = name).mediaItem())
                 renaming = null
             } }
-            deleting?.let { song -> ConfirmDialog("删除音乐？", "将删除“${song.title}”在 GlassBeat 中的副本及歌单记录。原始文件不受影响。", { deleting = null }) {
+            deleting?.let { song -> ConfirmDialog("删除音乐？", "将删除“${song.title}”在 FavSoda 中的副本及歌单记录。原始文件不受影响。", { deleting = null }) {
                 if (player != null) for (i in player.mediaItemCount - 1 downTo 0) if (player.getMediaItemAt(i).mediaId == song.id) player.removeMediaItem(i)
                 model.delete(song); deleting = null
             } }
@@ -215,7 +215,7 @@ fun GlassBeatApp(model: LibraryModel, player: MediaController?) {
                     }
                 }
             }, confirmButton = { TextButton(onClick = { addingToPlaylist = null }) { Text("完成") } }) }
-            model.message?.let { text -> AlertDialog(onDismissRequest = { model.message = null }, title = { Text("GlassBeat") }, text = { Text(text) }, confirmButton = { TextButton(onClick = { model.message = null }) { Text("知道了") } }, dismissButton = {
+            model.message?.let { text -> AlertDialog(onDismissRequest = { model.message = null }, title = { Text("FavSoda") }, text = { Text(text) }, confirmButton = { TextButton(onClick = { model.message = null }) { Text("知道了") } }, dismissButton = {
                 if (text.contains("抖音") || text.contains("媒体资源")) TextButton(onClick = { model.message = null; videoPicker.launch(arrayOf("video/*")) }) { Text("本地视频提取") }
             }) }
         }

@@ -67,7 +67,7 @@ fun ThemeScreen(theme: ThemeSettings, model: LibraryModel) {
         }
         GlassPanel {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("GlassBeat ${model.updater.installedVersion}", style = MaterialTheme.typography.titleMedium)
+                Text("FavSoda ${model.updater.installedVersion}", style = MaterialTheme.typography.titleMedium)
                 Button(onClick = model.updater::check, modifier = Modifier.fillMaxWidth()) { Text("检查更新") }
                 Text("无账号 · 无广告 · 无自建服务器", style = MaterialTheme.typography.bodyMedium)
                 Text("本地音乐始终保存在设备。仅在解析分享、下载媒体或主动检查更新时联网，不上传音乐库。卸载会清除应用内音乐，请先导出重要文件。", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -88,7 +88,7 @@ fun ImportDialog(model: LibraryModel, busy: Boolean, dismiss: () -> Unit, audio:
             HorizontalDivider()
             Text("抖音分享", style = MaterialTheme.typography.titleSmall)
             OutlinedTextField(text, { text = it }, modifier = Modifier.fillMaxWidth(), label = { Text("粘贴完整分享内容或链接") }, minLines = 2, maxLines = 4)
-            Text("也可以在抖音中通过系统分享选择 GlassBeat。公开资源可访问时会显示导入预览。", style = MaterialTheme.typography.bodySmall)
+            Text("也可以在抖音中通过系统分享选择 FavSoda。公开资源可访问时会显示导入预览。", style = MaterialTheme.typography.bodySmall)
             Text("仅保存你有权使用的内容。", style = MaterialTheme.typography.bodySmall)
         }
     }, confirmButton = { TextButton(onClick = { dismiss(); model.resolve(text) }, enabled = text.isNotBlank() && !busy) { Text("解析链接") } }, dismissButton = { TextButton(onClick = dismiss) { Text("关闭") } })

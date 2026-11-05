@@ -11,7 +11,7 @@ import androidx.compose.runtime.*
 import androidx.core.content.ContextCompat
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
-import io.github.glassbeat.ui.GlassBeatApp
+import io.github.glassbeat.ui.FavSodaApp
 
 class MainActivity : ComponentActivity() {
     private val model: LibraryModel by viewModels()
@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         if (savedInstanceState == null) model.receive(intent)
-        setContent { GlassBeatApp(model, controller) }
+        setContent { FavSodaApp(model, controller) }
     }
     override fun onStart() {
         super.onStart()

@@ -1,6 +1,6 @@
 # 依赖与许可
 
-GlassBeat 源码以 Apache-2.0 发布，未复制 ShuYin、Seal 或 Chocola 的源码，也未打包 yt-dlp 或 FFmpeg。
+FavSoda 源码以 Apache-2.0 发布，未复制 ShuYin、Seal 或 Chocola 的源码，也未打包 yt-dlp 或 FFmpeg。
 
 | 直接依赖 | 版本 | 上游许可 |
 | --- | --- | --- |

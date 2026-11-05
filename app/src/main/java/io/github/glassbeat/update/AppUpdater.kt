@@ -52,7 +52,7 @@ class AppUpdater(private val context: Context, private val scope: CoroutineScope
         if (job?.isActive == true) return
         job = scope.launch {
             val directory = File(context.cacheDir, "updates").apply { mkdirs() }
-            val target = File(directory, "GlassBeat-${release.version}.apk")
+            val target = File(directory, "FavSoda-${release.version}.apk")
             val partial = File(directory, "download.part.apk")
             mutable.value = UpdateState.Downloading(release, 0f)
             try {
@@ -77,7 +77,7 @@ class AppUpdater(private val context: Context, private val scope: CoroutineScope
     internal fun verifyPackage(file: File) {
         val candidate = context.packageManager.getPackageArchiveInfo(file.absolutePath, signingFlags()) ?: error("更新文件不是有效的 APK")
         val installed = packageInfo()
-        require(candidate.packageName == context.packageName) { "APK 包名与 GlassBeat 不一致，已拒绝安装" }
+        require(candidate.packageName == context.packageName) { "APK 包名与 FavSoda 不一致，已拒绝安装" }
         val currentCode = if (Build.VERSION.SDK_INT >= 28) installed.longVersionCode else installed.versionCode.toLong()
         val newCode = if (Build.VERSION.SDK_INT >= 28) candidate.longVersionCode else candidate.versionCode.toLong()
         require(newCode > currentCode) { "此 APK 版本号没有高于当前安装版本" }
@@ -88,6 +88,6 @@ class AppUpdater(private val context: Context, private val scope: CoroutineScope
         verifyPackage(file)
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.updates", file)
         return Intent(Intent.ACTION_VIEW).setDataAndType(uri, "application/vnd.android.package-archive")
-            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION).also { it.clipData = android.content.ClipData.newRawUri("GlassBeat update", uri) }
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION).also { it.clipData = android.content.ClipData.newRawUri("FavSoda update", uri) }
     }
 }
