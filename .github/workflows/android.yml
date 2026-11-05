@@ -25,6 +25,7 @@ jobs:
           name: GlassBeat-build
           path: |
             app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/androidTest/debug/*.apk
             app/build/reports/
   device-tests:
     needs: build
@@ -39,7 +40,10 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: GlassBeat-build
+          path: ci-artifacts
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -53,7 +57,12 @@ jobs:
           target: google_apis
           disable-animations: true
           script: |
-            ./gradlew connectedDebugAndroidTest --max-workers=2
+            adb install -r ci-artifacts/outputs/apk/debug/app-debug.apk
+            adb install -r ci-artifacts/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+            mkdir -p app/build/outputs/device-tests
+            adb shell am instrument -w -r io.github.glassbeat.test/androidx.test.runner.AndroidJUnitRunner > app/build/outputs/device-tests/instrumentation.txt
+            cat app/build/outputs/device-tests/instrumentation.txt
+            python3 -c "import re; s=open('app/build/outputs/device-tests/instrumentation.txt').read(); m=re.search(r'OK \((\d+) tests?\)',s); assert m and int(m[1]) >= 8, 'Device tests did not pass'"
             mkdir -p app/build/outputs/screenshots
             adb pull /sdcard/Android/data/io.github.glassbeat/files/screenshots app/build/outputs/screenshots/
       - uses: actions/upload-artifact@v4
@@ -61,6 +70,7 @@ jobs:
         with:
           name: device-test-results-${{ matrix.api }}
           path: |
+            app/build/outputs/device-tests/
             app/build/reports/androidTests/
             app/build/outputs/connected_android_test_additional_output/
             app/build/outputs/screenshots/
