@@ -22,8 +22,6 @@ import io.github.glassbeat.data.Song
 @Composable
 fun ColumnScope.PlayerScreen(state: PlaybackUi, song: Song?, player: MediaController?, back: () -> Unit, favorite: (Song) -> Unit) {
     val t = LocalAppearance.current
-    var dragging by remember { mutableStateOf(false) }
-    var seek by remember { mutableFloatStateOf(0f) }
     var queue by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(if (state.playing && t.motion && !t.lowPower) 1f else .96f, label = "artwork")
     BoxWithConstraints(Modifier.weight(1f).fillMaxWidth()) {
@@ -49,13 +47,12 @@ fun ColumnScope.PlayerScreen(state: PlaybackUi, song: Song?, player: MediaContro
             Spacer(Modifier.height(18.dp))
             GlassPanel(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(horizontal = 18.dp, vertical = 18.dp)) {
-                    val end = state.duration.toFloat().coerceAtLeast(1f)
-                    Slider(value = (if (dragging) seek else state.position.toFloat()).coerceIn(0f, end), onValueChange = { dragging = true; seek = it },
-                        onValueChangeFinished = { player?.seekTo(seek.toLong()); dragging = false }, valueRange = 0f..end, enabled = state.duration > 0)
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(formatTime(if (dragging) seek.toLong() else state.position), style = MaterialTheme.typography.labelSmall)
-                        Text(formatTime(state.duration), style = MaterialTheme.typography.labelSmall)
-                    }
+                    PlaybackProgress(
+                        mediaId = state.id, duration = state.duration, playing = state.playing,
+                        lowPower = t.lowPower,
+                        readPosition = { player?.currentPosition ?: state.position },
+                        onSeek = { player?.seekTo(it) }
+                    )
                     Row(Modifier.fillMaxWidth().padding(top = 16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         IconButton(onClick = { player?.shuffleModeEnabled = !state.shuffle }) { Icon(Icons.Rounded.Shuffle, if (state.shuffle) "关闭随机播放" else "开启随机播放", tint = if (state.shuffle) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant) }
                         IconButton(onClick = { player?.seekToPrevious() }) { Icon(Icons.Rounded.SkipPrevious, "上一首", Modifier.size(32.dp)) }
