@@ -11,6 +11,10 @@
   <img src="docs/screenshots/themes.png" width="230" alt="玻璃主题编辑器" />
   <img src="docs/screenshots/player.png" width="230" alt="浅色全屏播放器" />
 </p>
+<p>
+  <img src="docs/screenshots/import-sheet.png" width="230" alt="玻璃导入面板" />
+  <img src="docs/screenshots/song-menu.png" width="230" alt="分组歌曲操作" />
+</p>
 
 ## 功能
 
