@@ -12,7 +12,7 @@
 | data/ThemeStore | DataStore 外观设置与 SharedPreferences 升级迁移 |
 | importer/AudioExtractor | 在主 Looper 调用 Media3 Transformer，输出 AAC/M4A |
 | importer/DouyinResolver | 解析公开 JSON/网页数据，返回标题、时长与媒体地址 |
-| importer/MediaNetwork | HTTPS、站点白名单、有限重定向、超时及下载上限 |
+| importer/MediaNetwork | 分享页面限定官方站点；媒体支持动态 CDN、每跳目标地址检查、HTTPS、有限重定向与大小/超时限制 |
 | PlaybackService | ExoPlayer、MediaSession、音频焦点和耳机断开处理 |
 
 ## 升级与一致性

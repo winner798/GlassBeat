@@ -21,11 +21,20 @@ class DouyinParserTest {
         assertEquals(12000L, parsed.durationMs)
         assertEquals("https://v3.douyinvod.com/test.mp4", parsed.mediaUrl)
     }
-    @Test fun downloadHostPolicyAcceptsCurrentCdnAndRejectsLookalikes() {
+    @Test fun downloadsAcceptRegionalAndPreviouslyUnknownPublicCdns() {
+        val public = java.net.InetAddress.getByName("1.1.1.1")
+        val network = io.github.glassbeat.importer.MediaNetwork(resolveAddresses = { listOf(public) })
+        listOf("v3-dy-o.zjcdn.com", "v9-video.tiktokcdn.com", "regional-new.example.com").forEach { network.requireRemoteMediaHost(it) }
+        // Some Android VPNs legitimately resolve public names into this synthetic range.
+        assertTrue(network.isRemoteAddress(java.net.InetAddress.getByName("198.18.0.10")))
+    }
+    @Test fun refusesLocalMediaDestinationsIncludingRedirectTargets() {
         val network = io.github.glassbeat.importer.MediaNetwork()
-        assertTrue(network.isAllowedMediaHost("v3-dy-o.zjcdn.com"))
-        assertFalse(network.isAllowedMediaHost("zjcdn.com.attacker.com"))
-        assertFalse(network.isAllowedMediaHost("127.0.0.1"))
+        listOf("0.0.0.0", "127.0.0.1", "10.1.2.3", "172.16.0.1", "192.168.1.1", "169.254.169.254", "100.64.0.1", "224.0.0.1", "255.255.255.255", "::1", "fe80::1", "fc00::1", "::ffff:127.0.0.1").forEach {
+            assertFalse(it, network.isRemoteAddress(java.net.InetAddress.getByName(it)))
+        }
+        val mixed = io.github.glassbeat.importer.MediaNetwork(resolveAddresses = { listOf(java.net.InetAddress.getByName("1.1.1.1"), java.net.InetAddress.getByName("127.0.0.1")) })
+        assertThrows(IllegalArgumentException::class.java) { mixed.requireRemoteMediaHost("redirect.example.com") }
     }
     @Test fun parsesSlidesInfoResponseForOrdinaryVideo() {
         val wrapped = "{\"aweme_details\":[${org.json.JSONObject(item).getJSONObject("aweme_detail")}],\"status_code\":0}"
