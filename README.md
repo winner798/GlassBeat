@@ -42,7 +42,7 @@ APK：`app/build/outputs/apk/debug/app-debug.apk`。每次 push 的 GitHub Actio
 4. 切换深浅色并重启；分享文本到 GlassBeat，确认出现未接入解析的说明。
 5. 测试空文件、损坏音频、存储空间不足与大文件。可播放格式受设备解码器支持限制。
 
-尚未完成真机验收。卸载应用会删除导入副本；当前尚无导出功能，请保留原文件。
+已在开发环境通过 `assembleDebug` 与 `lintDebug`（JDK 17 / SDK 35）；尚未完成真机验收。卸载应用会删除导入副本；当前尚无导出功能，请保留原文件。
 
 ## 参考
 
