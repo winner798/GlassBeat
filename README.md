@@ -62,6 +62,7 @@ CI 包含 Android 10 / Android 15 模拟器验证，覆盖 Room 关系与旧版�
 ## 项目文档
 
 - [架构与升级策略](docs/ARCHITECTURE.md)
+- [分享解析仓库调研与实测](docs/LINK_PARSERS.md)
 - [验收与测试说明](docs/TESTING.md)
 - [隐私说明](PRIVACY.md)
 - [依赖与许可](docs/DEPENDENCIES.md)

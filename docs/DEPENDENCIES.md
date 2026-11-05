@@ -20,3 +20,5 @@ GlassBeat 源码以 Apache-2.0 发布，未复制 ShuYin、Seal 或 Chocola 的�
 测试使用 JUnit 4（EPL-1.0）、AndroidX Test（Apache-2.0）、JSON-java（public domain）。测试素材是仓库生成的纯色画面和 440Hz 正弦波，不包含第三方音乐。FFmpeg 仅用于生成测试素材，不是应用依赖。
 
 完整运行时依赖可通过 `./gradlew :app:dependencies --configuration debugRuntimeClasspath` 查看。标准开源许可原文见 [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0)。AndroidX 源码及许可：[AndroidX](https://android.googlesource.com/platform/frameworks/support/)；[Media3](https://github.com/androidx/media)；[Coil](https://github.com/coil-kt/coil)；[Haze](https://github.com/chrisbanes/haze)。
+
+抖音公开 slidesinfo 兼容路径参考 [wujunwei928/parse-video-py](https://github.com/wujunwei928/parse-video-py)，MIT 声明保留于根目录 THIRD_PARTY_NOTICES，并随 APK 的 assets 分发。没有引入 Python 运行时或远程解析服务。

@@ -19,7 +19,7 @@ class MediaNetwork {
             val uri = URI(current)
             require(uri.scheme == "https" && uri.userInfo == null && (uri.port == -1 || uri.port == 443)) { "仅支持安全 HTTPS 链接" }
             val host = uri.host?.lowercase() ?: error("无效链接")
-            require(if (page) DouyinPageParser.isDouyin(host) else mediaHost(host)) { "不支持的媒体地址" }
+            require(if (page) DouyinPageParser.isDouyin(host) else isAllowedMediaHost(host)) { "不支持的媒体地址" }
             val connection = URL(current).openConnection() as HttpURLConnection
             connection.instanceFollowRedirects = false
             connection.connectTimeout = 15000; connection.readTimeout = 20000
@@ -42,7 +42,7 @@ class MediaNetwork {
         }
         error("分享链接跳转次数过多")
     }
-    private fun mediaHost(host: String) = listOf("douyin.com", "iesdouyin.com", "douyinvod.com", "bytecdn.cn", "byteimg.com", "snssdk.com", "pstatp.com", "ibytedtos.com", "bytecdntp.com").any { host == it || host.endsWith(".$it") }
+    internal fun isAllowedMediaHost(host: String) = listOf("douyin.com", "iesdouyin.com", "douyinvod.com", "zjcdn.com", "bytecdn.cn", "byteimg.com", "snssdk.com", "pstatp.com", "ibytedtos.com", "bytecdntp.com").any { host == it || host.endsWith(".$it") }
     suspend fun page(url: String): Page = withContext(Dispatchers.IO) {
         val connection = connect(url, true)
         try {

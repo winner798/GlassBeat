@@ -21,6 +21,18 @@ class DouyinParserTest {
         assertEquals(12000L, parsed.durationMs)
         assertEquals("https://v3.douyinvod.com/test.mp4", parsed.mediaUrl)
     }
+    @Test fun downloadHostPolicyAcceptsCurrentCdnAndRejectsLookalikes() {
+        val network = io.github.glassbeat.importer.MediaNetwork()
+        assertTrue(network.isAllowedMediaHost("v3-dy-o.zjcdn.com"))
+        assertFalse(network.isAllowedMediaHost("zjcdn.com.attacker.com"))
+        assertFalse(network.isAllowedMediaHost("127.0.0.1"))
+    }
+    @Test fun parsesSlidesInfoResponseForOrdinaryVideo() {
+        val wrapped = "{\"aweme_details\":[${org.json.JSONObject(item).getJSONObject("aweme_detail")}],\"status_code\":0}"
+        val preview = DouyinPageParser.parse(wrapped, "https://www.iesdouyin.com/share/video/123/")!!
+        assertEquals(12000L, preview.durationMs)
+        assertTrue(preview.mediaUrl.startsWith("https://"))
+    }
     @Test fun parsesRouterScriptWithNestedObjects() {
         val html = "<script>window._ROUTER_DATA = {\"loaderData\":{\"video\":$item}};</script>"
         assertNotNull(DouyinPageParser.parse(html, "source"))

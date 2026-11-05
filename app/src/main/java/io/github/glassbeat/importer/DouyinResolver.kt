@@ -78,7 +78,13 @@ class DouyinResolver(private val network: MediaNetwork = MediaNetwork()) {
         val id = Regex("/(?:video|share/video)/(\\d+)").find(page.url)?.groupValues?.get(1)
             ?: Regex("(?:modal_id|aweme_id)=(\\d+)").find(page.url)?.groupValues?.get(1)
         if (id != null) {
-            val alternatives = listOf("https://www.iesdouyin.com/share/video/$id/", "https://www.douyin.com/aweme/v1/web/aweme/detail/?aweme_id=$id")
+            // Public slidesinfo also returns ordinary videos when legacy page SSR is empty.
+            // Reference: wujunwei928/parse-video-py (MIT), recorded in THIRD_PARTY_NOTICES.
+            val alternatives = listOf(
+                "https://www.iesdouyin.com/web/api/v2/aweme/slidesinfo/?aweme_ids=%5B$id%5D",
+                "https://www.iesdouyin.com/web/api/v2/aweme/slidesinfo/?aweme_ids=%5B$id%5D&request_source=200",
+                "https://www.iesdouyin.com/share/video/$id/",
+                "https://www.douyin.com/aweme/v1/web/aweme/detail/?aweme_id=$id")
             for (url in alternatives) {
                 val result = try { network.page(url) } catch (e: CancellationException) { throw e } catch (_: Exception) { continue }
                 DouyinPageParser.parse(result.body, page.url)?.let { return@withContext it }
