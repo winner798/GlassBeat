@@ -4,6 +4,8 @@
 
 开源、离线优先、可自定义的 Android 玻璃风格音乐播放器。
 
+1.0.5：弹性滑动的立体导航、按压扩张与图标上浮；全局增加玻璃倒角、内阴影和反射，Android 13+ 支持背景边缘折射。[实现与参考源码](docs/GLASS.md)。
+
 **Kotlin · Jetpack Compose · Media3 · Room · DataStore · Haze**
 
 <p>
@@ -11,10 +13,13 @@
   <img src="docs/screenshots/themes.png" width="230" alt="玻璃主题编辑器" />
   <img src="docs/screenshots/player.png" width="230" alt="浅色全屏播放器" />
 </p>
+<details>
+<summary>二级界面布局（1.0.4）</summary>
 <p>
   <img src="docs/screenshots/import-sheet.png" width="230" alt="玻璃导入面板" />
   <img src="docs/screenshots/song-menu.png" width="230" alt="分组歌曲操作" />
 </p>
+</details>
 
 ## 功能
 

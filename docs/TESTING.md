@@ -75,3 +75,13 @@
 - 新版导入与歌曲菜单的设备截图已更新到 README，截图只使用测试素材。
 - 发布 APK 显示名称 FavSoda，包名 `io.github.glassbeat`、versionCode 14、版本 1.0.4；签名与旧版本一致。
 - FavSoda 与 GlassBeat 文件名的发布 APK 内容相同；旧文件名用于兼容已有更新器和稳定版清单。
+
+
+## 1.0.5 立体玻璃与导航验证
+
+- 26 项 JVM 测试、Debug/Release 静态检查与签名构建通过。
+- Android 10 / Android 15 各 17 项设备测试通过：[CI](https://github.com/winner798/GlassBeat/actions/runs/42014108946)。
+- Android 15 实际完成 RuntimeShader 的编译及绘制；Android 10 验证未调用新系统 API 的兼容材质。
+- 导航测试验证按压预览不切换页面、取消不触发操作、完成点击只切换一次；通过截图像素差异确认反馈覆盖面积明显，另验证浅色与低性能模式。
+- 实际音乐库、外观和播放器截图已更新。参考仓库、研究快照与实现分层见 [GLASS.md](GLASS.md)。
+- APK 版本 1.0.5 / versionCode 15，包名和签名保持升级兼容。
