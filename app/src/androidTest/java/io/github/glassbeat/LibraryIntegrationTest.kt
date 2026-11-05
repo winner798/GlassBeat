@@ -72,6 +72,16 @@ class LibraryIntegrationTest {
                 assertNull(retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_HAS_VIDEO))
                 assertTrue(retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_DURATION)!!.toLong() > 500)
             } finally { retriever.release() }
+            val repo = LibraryRepository(context)
+            val song = repo.commitAudio(output, "Extracted test", "设备测试")
+            val exported = File(context.cacheDir, "exported-test.m4a")
+            try {
+                repo.export(song, Uri.fromFile(exported))
+                assertArrayEquals(output.readBytes(), exported.readBytes())
+                repo.delete(song)
+                assertFalse(output.exists())
+                assertTrue(input.exists())
+            } finally { repo.dao.delete(song.id); exported.delete() }
         } finally { input.delete(); output.delete() }
     }
 }

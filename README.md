@@ -66,5 +66,6 @@ CI 包含 Android 10 / Android 15 模拟器验证，覆盖 Room 关系与旧版�
 - [隐私说明](PRIVACY.md)
 - [依赖与许可](docs/DEPENDENCIES.md)
 - [贡献指南](CONTRIBUTING.md)
+- [签名与正式构建](docs/SIGNING.md)
 
 Apache-2.0。独立新建工程，未复制其他播放器源码。
