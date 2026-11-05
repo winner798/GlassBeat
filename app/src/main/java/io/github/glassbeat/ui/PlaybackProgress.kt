@@ -1,6 +1,7 @@
 package io.github.glassbeat.ui
 
 import android.os.SystemClock
+import androidx.compose.animation.core.withInfiniteAnimationFrameNanos
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -27,7 +28,7 @@ internal fun PlaybackProgress(
     val latestSeek by rememberUpdatedState(onSeek)
     LaunchedEffect(mediaId, end, playing, lowPower) {
         while (true) {
-            if (playing && !lowPower) withFrameNanos { } else delay(100)
+            if (playing && !lowPower) withInfiniteAnimationFrameNanos { } else delay(100)
             if (!dragging) {
                 val actual = latestPosition().coerceIn(0, end)
                 val requested = pending
@@ -40,6 +41,8 @@ internal fun PlaybackProgress(
             }
         }
     }
+    val elapsedLabel = remember(position / 1000) { formatTime(position) }
+    val durationLabel = remember(end / 1000) { formatTime(end) }
     Column {
         Slider(
             value = position.toFloat().coerceIn(0f, end.toFloat().coerceAtLeast(1f)),
@@ -56,8 +59,8 @@ internal fun PlaybackProgress(
             modifier = Modifier.fillMaxWidth().testTag("playback-progress")
         )
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(formatTime(position), style = MaterialTheme.typography.labelSmall)
-            Text(formatTime(end), style = MaterialTheme.typography.labelSmall)
+            Text(elapsedLabel, style = MaterialTheme.typography.labelSmall)
+            Text(durationLabel, style = MaterialTheme.typography.labelSmall)
         }
     }
 }
