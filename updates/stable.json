@@ -1,12 +1,12 @@
 {
   "packageName": "io.github.glassbeat",
-  "version": "1.0.3",
-  "size": 2664110,
-  "sha256": "e6c8748ea9abee7736e78fc881063a3414a0894ab5bc9e326c4ec094db6feb39",
-  "notes": "修复应用内更新将 HTTP 404 误报为“仓库未发布正式版本”。新增正式版本列表、仓库稳定版清单和同仓库 APK 下载备用路径，保留文件摘要、包名、版本号与签名校验。\n\n包含 1.0.2 的抖音保存修复：适配动态媒体 CDN，避免已解析的分享在保存时提示“不支持的媒体地址”。\n\n安装：下载 GlassBeat-v1.0.3.apk，覆盖安装原版本，请勿卸载以免丢失应用内音乐。签名与既有版本一致。\n\n验证：26 项 JVM 测试、静态检查、Android 10 / Android 15 各 8 项设备测试通过。\n\n注意：无账号更新要求仓库为 Public。私有仓库对未登录手机返回 404；更新备用地址不会绕过 GitHub 访问权限。\n",
+  "version": "1.0.4",
+  "size": 2714366,
+  "sha256": "afec90d628b7e72ca8f62d53397e2ac89fdd329189770530922886cfcb89cfd2",
+  "notes": "FavSoda 1.0.4：重做二级界面、玻璃材质和按压反馈，并修复播放进度拖动卡顿与回跳。\n\n- 更名为 FavSoda：桌面、系统分享、首页、关于和提示文案同步更新。\n- 播放队列改为底部玻璃面板，加入封面、歌手、时长、当前播放标记、定位与移出队列。\n- 重做导入面板和歌曲菜单，统一导入预览、重命名、歌单选择、删除确认及更新提示。\n- 减轻灰雾底色，增强边缘高光与柔和反射；保留透明度调节和低性能模式。\n- 按钮与卡片加入轻压缩放、弹簧回弹和完成点击后的轻触反馈；取消或禁用不会触发操作，拖动进度不持续震动。关闭动效或开启低性能模式时关闭按压动画。\n- 进度条独立按帧刷新，拖动时预览、松手只跳转一次并等待播放器同步；播放、暂停和切歌状态及时更新。\n\n验证：26 项 JVM 测试、静态检查，Android 10 / Android 15 各 15 项设备回归通过。\n\n安装：在应用内打开“外观 → 检查更新”，或下载 **FavSoda-v1.0.4.apk** 覆盖安装。包名、签名和音乐库保持兼容；请勿卸载旧版。\n\nGlassBeat-v1.0.4.apk 为旧版更新器保留的兼容文件，与 FavSoda-v1.0.4.apk 内容及签名完全相同。\n",
   "downloadUrls": [
-    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.3/dist/GlassBeat-v1.0.3.apk",
-    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/712724430",
-    "https://github.com/winner798/GlassBeat/releases/download/v1.0.3/GlassBeat-v1.0.3.apk"
+    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.4/dist/GlassBeat-v1.0.4.apk",
+    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/712988953",
+    "https://github.com/winner798/GlassBeat/releases/download/v1.0.4/GlassBeat-v1.0.4.apk"
   ]
 }
