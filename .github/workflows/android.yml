@@ -59,6 +59,8 @@ jobs:
           target: google_apis
           disable-animations: true
           emulator-boot-timeout: 180
+          disk-size: 2048M
+          ram-size: 2048M
           script: |
             adb install -r ci-artifacts/outputs/apk/debug/app-debug.apk
             adb install -r ci-artifacts/outputs/apk/androidTest/debug/app-debug-androidTest.apk
