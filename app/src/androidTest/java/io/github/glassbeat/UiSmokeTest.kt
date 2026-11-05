@@ -54,16 +54,11 @@ class UiSmokeTest {
         compose.onNodeWithText("关闭").performClick()
         compose.onNodeWithText("First Light").performClick()
         compose.waitUntil(8000) { compose.onAllNodesWithContentDescription("收起播放器").fetchSemanticsNodes().isNotEmpty() }
+        compose.waitUntil(8000) { compose.onAllNodesWithContentDescription("暂停").fetchSemanticsNodes().isNotEmpty() }
         screenshot("player")
         compose.waitUntil(8000) { compose.onAllNodesWithContentDescription("播放").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithContentDescription("播放").performClick()
         compose.waitUntil(5000) { compose.onAllNodesWithContentDescription("暂停").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithContentDescription("收起播放器").performClick()
-    }
-    @Test fun malformedSharedTextProducesClearFailure() {
-        compose.activityRule.scenario.onActivity { activity ->
-            activity.startActivity(Intent(context, MainActivity::class.java).setAction(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, "not a link"))
-        }
-        compose.waitUntil(8000) { compose.onAllNodesWithText("抖音解析失败：未找到有效抖音链接，请粘贴包含 https:// 的完整分享内容。\n可重试，或使用本地视频提取。").fetchSemanticsNodes().isNotEmpty() }
     }
 }

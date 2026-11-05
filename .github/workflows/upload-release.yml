@@ -1,0 +1,40 @@
+name: Upload signed release assets
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Three-part version number without v
+        required: true
+        default: 1.0.0
+      artifact_ref:
+        description: Branch containing the signed distribution files
+        required: true
+        default: release-artifacts/v1.0.0
+permissions:
+  contents: write
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch signed distribution bundle
+        env:
+          ARTIFACT_REF: ${{ inputs.artifact_ref }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          [[ "$ARTIFACT_REF" == release-artifacts/* ]]
+          git fetch origin "$ARTIFACT_REF"
+          mkdir -p release-bundle
+          git show "FETCH_HEAD:dist/GlassBeat-v${VERSION}.apk" > "release-bundle/GlassBeat-v${VERSION}.apk"
+          git show FETCH_HEAD:dist/SHA256SUMS > release-bundle/SHA256SUMS
+          cd release-bundle
+          sha256sum -c SHA256SUMS
+      - name: Upload to draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+        run: |
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          gh release view "v${VERSION}" >/dev/null 2>&1 || gh release create "v${VERSION}" --draft --target main --generate-notes
+          gh release upload "v${VERSION}" "release-bundle/GlassBeat-v${VERSION}.apk" release-bundle/SHA256SUMS --clobber
