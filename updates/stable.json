@@ -1,12 +1,12 @@
 {
   "packageName": "io.github.glassbeat",
-  "version": "1.0.8",
-  "size": 2782202,
-  "sha256": "5d02ed892175e6cb8e2ca3390bd2db8749ce184b0a6ede850bf45ff2c3aaa8be",
-  "notes": "FavSoda 1.0.8：应用图标换用浅色背景。\n\n- 图标底板改为珍珠白到淡蓝的柔和渐变，保留玻璃音符与气泡。\n- 保留 1.0.7 的轻柔底部导航、自适应圆形/圆角方形裁切及主题单色版本。\n\n验证：26 项 JVM 测试、静态检查，Android 10 / Android 15 各 20 项设备测试通过。\n\n在应用内“外观 → 检查更新”，或下载 FavSoda-v1.0.8.apk 覆盖安装，保留已有音乐库。\n\nGlassBeat-v1.0.8.apk 为旧版更新器使用的同内容兼容文件。\n",
+  "version": "1.0.9",
+  "size": 2798987,
+  "sha256": "d7b46723b560b79404dc5b7b19c833514651e911cfc6e27b825f68c903e67399",
+  "notes": "FavSoda 1.0.9：统一底部导航的适度玻璃层次，并加入圆润气泡字标。\n\n- 底部选中区域复用其他交互按钮的渐变、高光边和玻璃底座，轻微加强外层反射与浅阴影。\n- 保留轻柔滑动和按压反馈，维持清爽的导航布局。\n- 左上角 FavSoda 改为圆润气泡字标，加入渐变高光、轻微厚度层和柔和投影；歌曲和正文的字体设置独立保留。\n- 字标字体派生自 Fredoka，SIL OFL-1.1；完整字体许可随源码与 APK 分发。\n\n验证：26 项 JVM 测试、静态检查，Android 10 / Android 15 各 20 项设备测试通过。\n\n更新：应用内“外观 → 检查更新”，或下载 FavSoda-v1.0.9.apk 覆盖安装，保留已有音乐库。\n\nGlassBeat-v1.0.9.apk 为旧版更新器使用的同内容兼容文件。\n",
   "downloadUrls": [
-    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.8/dist/GlassBeat-v1.0.8.apk",
-    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/713234937",
-    "https://github.com/winner798/GlassBeat/releases/download/v1.0.8/GlassBeat-v1.0.8.apk"
+    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.9/dist/GlassBeat-v1.0.9.apk",
+    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/713301431",
+    "https://github.com/winner798/GlassBeat/releases/download/v1.0.9/GlassBeat-v1.0.9.apk"
   ]
 }
