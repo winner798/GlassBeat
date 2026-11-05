@@ -3,6 +3,7 @@
 ## 1.0.1 更新通道验证
 
 - 15 项 JVM 测试通过，覆盖官方资产 API 优先级与仓库边界。
+- 1.0.1 在 Android 10 / Android 15 各 8 项设备测试全部通过；[本版 CI](https://github.com/winner798/GlassBeat/actions/runs/41971996371) 全绿。
 - 使用生产 `GitHubReleaseNetwork` 和 `ReleaseInfo` 发起临时集成测试：读取公开最新版本、直接下载官方 API 资产、核对字节数与 GitHub SHA-256 全部成功。
 - 1.0.1 的播放器、数据库、文件导入与安装签名校验逻辑沿用下方已通过设备验证的实现。
 
