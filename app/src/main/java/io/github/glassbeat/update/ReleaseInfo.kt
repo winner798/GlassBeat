@@ -28,15 +28,16 @@ data class ReleaseInfo(val version: String, val notes: String, val url: String, 
             }
             val asset = candidates.firstOrNull { it.optString("name").startsWith("GlassBeat-", true) } ?: candidates.singleOrNull()
                 ?: error("此版本尚未提供可安装的正式 APK")
-            val url = asset.getString("browser_download_url")
+            val url = asset.optString("url").takeIf { it.isNotBlank() } ?: asset.getString("browser_download_url")
             require(validAssetUrl(url)) { "更新文件不是来自 GlassBeat 发布仓库" }
             val digest = asset.optString("digest").removePrefix("sha256:").takeIf { it.matches(Regex("[0-9a-fA-F]{64}")) }
             return ReleaseInfo(version.removePrefix("v"), root.optString("body").take(12000), url, asset.getLong("size"), digest)
         }
         fun validAssetUrl(url: String): Boolean = runCatching {
             val uri = URI(url)
-            uri.scheme == "https" && uri.host == "github.com" && uri.userInfo == null && (uri.port == -1 || uri.port == 443) &&
-                uri.normalize().path.startsWith("/winner798/GlassBeat/releases/download/") && uri.path.endsWith(".apk", true)
+            uri.scheme == "https" && uri.userInfo == null && (uri.port == -1 || uri.port == 443) && (
+                (uri.host == "github.com" && uri.normalize().path.startsWith("/winner798/GlassBeat/releases/download/") && uri.path.endsWith(".apk", true)) ||
+                (uri.host == "api.github.com" && uri.path.matches(Regex("/repos/winner798/GlassBeat/releases/assets/\\d+"))))
         }.getOrDefault(false)
     }
 }

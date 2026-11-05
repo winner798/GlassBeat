@@ -24,6 +24,17 @@ class UpdateMetadataTest {
             assertThrows(IllegalArgumentException::class.java) { ReleaseInfo.fromJson(release(url = url)) }
         }
     }
+    @Test fun prefersOfficialAssetApiForDownloads() {
+        val root = org.json.JSONObject(release())
+        val api = "https://api.github.com/repos/winner798/GlassBeat/releases/assets/123"
+        root.getJSONArray("assets").getJSONObject(0).put("url", api)
+        assertEquals(api, ReleaseInfo.fromJson(root.toString()).url)
+    }
+    @Test fun rejectsOtherRepositoryAssetApis() {
+        val root = org.json.JSONObject(release())
+        root.getJSONArray("assets").getJSONObject(0).put("url", "https://api.github.com/repos/attacker/app/releases/assets/123")
+        assertThrows(IllegalArgumentException::class.java) { ReleaseInfo.fromJson(root.toString()) }
+    }
     @Test fun rejectsDraftAndPreviewReleases() {
         assertThrows(IllegalArgumentException::class.java) { ReleaseInfo.fromJson(release(draft = true)) }
         assertThrows(IllegalArgumentException::class.java) { ReleaseInfo.fromJson(release(prerelease = true)) }
