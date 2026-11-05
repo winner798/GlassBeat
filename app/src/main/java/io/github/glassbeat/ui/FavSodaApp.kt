@@ -174,9 +174,12 @@ fun FavSodaApp(model: LibraryModel, player: MediaController?) {
             if (importDialog) ImportDialog(model, task != null, { importDialog = false }, { importDialog = false; audioPicker.launch(arrayOf("audio/*")) }, { importDialog = false; videoPicker.launch(arrayOf("video/*")) })
             model.preview?.let { preview ->
                 var allowed by remember(preview) { mutableStateOf(false) }
-                AlertDialog(onDismissRequest = { if (task == null) model.preview = null }, title = { Text("发现新的音轨") }, text = {
+                GlassDialog(onDismissRequest = { if (task == null) model.preview = null }, title = { Text("发现新的音轨") }, text = {
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Text(preview.title, style = MaterialTheme.typography.titleMedium)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Artwork("", Modifier.size(58.dp))
+                            Text(preview.title, Modifier.weight(1f).padding(start = 12.dp), style = MaterialTheme.typography.titleMedium, maxLines = 3, overflow = TextOverflow.Ellipsis)
+                        }
                         Text("来源：抖音视频 · ${if (preview.durationMs > 0) formatTime(preview.durationMs) else "时长将在导入后识别"}")
                         Text(if (task == null) "保存视频的完整音轨到本地音乐库。" else task!!.label)
                         Row(verticalAlignment = Alignment.CenterVertically) { Checkbox(allowed, { allowed = it }); Text("我有权保存这段内容", style = MaterialTheme.typography.bodySmall) }
@@ -184,17 +187,14 @@ fun FavSodaApp(model: LibraryModel, player: MediaController?) {
                 }, confirmButton = { TextButton(onClick = model::savePreview, enabled = allowed && task == null) { Text("保存到音乐库") } }, dismissButton = { TextButton(onClick = { model.preview = null }, enabled = task == null) { Text("取消") } })
             }
             songMenu?.let { song ->
-                AlertDialog(onDismissRequest = { songMenu = null }, title = { Text(song.title, maxLines = 2) }, text = {
-                    Column {
-                        ActionRow(if (song.favorite) "取消喜欢" else "添加到喜欢", Icons.Rounded.Favorite) { model.favorite(song); songMenu = null }
-                        ActionRow("添加到歌单", Icons.Rounded.PlaylistAdd) { addingToPlaylist = song; songMenu = null }
-                        if (tab == 1 && selectedPlaylist != null) ActionRow("从当前歌单移除", Icons.Rounded.PlaylistRemove) { model.setMembership(song, selectedPlaylist, false); songMenu = null }
-                        ActionRow("重命名", Icons.Rounded.Edit) { renaming = song; songMenu = null }
-                        ActionRow("编辑封面", Icons.Rounded.Image) { coverTarget = song; coverPicker.launch(arrayOf("image/*")); songMenu = null }
-                        ActionRow("导出音乐文件", Icons.Rounded.SaveAlt) { exportTarget = song.id; exporter.launch(exportName(song)); songMenu = null }
-                        ActionRow("删除音乐", Icons.Rounded.Delete) { deleting = song; songMenu = null }
-                    }
-                }, confirmButton = { TextButton(onClick = { songMenu = null }) { Text("关闭") } })
+                SongMenuSheet(song, { songMenu = null },
+                    favorite = { model.favorite(song); songMenu = null },
+                    playlist = { addingToPlaylist = song; songMenu = null },
+                    removeFromPlaylist = if (tab == 1 && selectedPlaylist != null) ({ model.setMembership(song, selectedPlaylist, false); songMenu = null }) else null,
+                    rename = { renaming = song; songMenu = null },
+                    cover = { coverTarget = song; coverPicker.launch(arrayOf("image/*")); songMenu = null },
+                    export = { exportTarget = song.id; exporter.launch(exportName(song)); songMenu = null },
+                    delete = { deleting = song; songMenu = null })
             }
             renaming?.let { song -> TextEntryDialog("重命名歌曲", song.title, { renaming = null }) { name ->
                 model.rename(song, name)
@@ -208,14 +208,14 @@ fun FavSodaApp(model: LibraryModel, player: MediaController?) {
             if (playlistDialog) TextEntryDialog("新建歌单", "", { playlistDialog = false }) { model.createPlaylist(it); playlistDialog = false }
             editingPlaylist?.let { list -> TextEntryDialog("重命名歌单", list.name, { editingPlaylist = null }) { model.renamePlaylist(list, it); editingPlaylist = null } }
             deletingPlaylist?.let { list -> ConfirmDialog("删除歌单？", "仅删除歌单“${list.name}”，音乐仍保留在音乐库。", { deletingPlaylist = null }) { model.deletePlaylist(list); playlistId = null; deletingPlaylist = null } }
-            addingToPlaylist?.let { song -> AlertDialog(onDismissRequest = { addingToPlaylist = null }, title = { Text("添加到歌单") }, text = {
-                if (playlists.isEmpty()) Text("先到“歌单”页面创建一个歌单。") else Column(Modifier.verticalScroll(rememberScrollState())) {
+            addingToPlaylist?.let { song -> GlassDialog(onDismissRequest = { addingToPlaylist = null }, title = { Text("添加到歌单") }, text = {
+                if (playlists.isEmpty()) Text("先到“歌单”页面创建一个歌单。") else Column {
                     playlists.forEach { list -> val checked = memberships.any { it.playlistId == list.id && it.songId == song.id }
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) { Checkbox(checked, { model.setMembership(song, list, it) }); Text(list.name) }
                     }
                 }
             }, confirmButton = { TextButton(onClick = { addingToPlaylist = null }) { Text("完成") } }) }
-            model.message?.let { text -> AlertDialog(onDismissRequest = { model.message = null }, title = { Text("FavSoda") }, text = { Text(text) }, confirmButton = { TextButton(onClick = { model.message = null }) { Text("知道了") } }, dismissButton = {
+            model.message?.let { text -> GlassDialog(onDismissRequest = { model.message = null }, title = { Text("FavSoda") }, text = { Text(text) }, confirmButton = { TextButton(onClick = { model.message = null }) { Text("知道了") } }, dismissButton = {
                 if (text.contains("抖音") || text.contains("媒体资源")) TextButton(onClick = { model.message = null; videoPicker.launch(arrayOf("video/*")) }) { Text("本地视频提取") }
             }) }
         }
@@ -246,15 +246,12 @@ fun FavSodaApp(model: LibraryModel, player: MediaController?) {
         IconButton(onClick = onMenu) { Icon(Icons.Rounded.MoreHoriz, "${song.title} 的菜单") }
     }
 }
-@Composable private fun ActionRow(label: String, icon: androidx.compose.ui.graphics.vector.ImageVector, action: () -> Unit) {
-    TextButton(onClick = action, modifier = Modifier.fillMaxWidth(), contentPadding = PaddingValues(12.dp)) { Icon(icon, null, Modifier.size(20.dp)); Spacer(Modifier.width(12.dp)); Text(label, Modifier.weight(1f)) }
-}
 @Composable fun TextEntryDialog(title: String, initial: String, dismiss: () -> Unit, confirm: (String) -> Unit) {
     var value by remember(initial) { mutableStateOf(initial) }
-    AlertDialog(onDismissRequest = dismiss, title = { Text(title) }, text = { OutlinedTextField(value, { value = it.take(200) }, singleLine = true, label = { Text("名称") }) }, confirmButton = { TextButton(onClick = { confirm(value.trim()) }, enabled = value.isNotBlank()) { Text("保存") } }, dismissButton = { TextButton(onClick = dismiss) { Text("取消") } })
+    GlassDialog(onDismissRequest = dismiss, title = { Text(title) }, text = { OutlinedTextField(value, { value = it.take(200) }, modifier = Modifier.fillMaxWidth(), singleLine = true, shape = RoundedCornerShape(16.dp), label = { Text("名称") }) }, confirmButton = { TextButton(onClick = { confirm(value.trim()) }, enabled = value.isNotBlank()) { Text("保存") } }, dismissButton = { TextButton(onClick = dismiss) { Text("取消") } })
 }
 @Composable private fun ConfirmDialog(title: String, detail: String, dismiss: () -> Unit, confirm: () -> Unit) {
-    AlertDialog(onDismissRequest = dismiss, title = { Text(title) }, text = { Text(detail) }, confirmButton = { TextButton(onClick = confirm) { Text("确认删除") } }, dismissButton = { TextButton(onClick = dismiss) { Text("取消") } })
+    GlassDialog(onDismissRequest = dismiss, title = { Text(title) }, text = { Text(detail) }, confirmButton = { TextButton(onClick = confirm) { Text("确认删除") } }, dismissButton = { TextButton(onClick = dismiss) { Text("取消") } })
 }
 private fun exportName(song: Song): String {
     val ext = when { song.mime.contains("flac") -> "flac"; song.mime.contains("wav") -> "wav"; song.mime.contains("ogg") -> "ogg"; song.mime.contains("mp4") -> "m4a"; song.mime.contains("aac") -> "aac"; else -> "mp3" }

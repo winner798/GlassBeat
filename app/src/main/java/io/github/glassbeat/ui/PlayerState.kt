@@ -34,6 +34,7 @@ fun rememberPlayback(player: MediaController?, onError: (String) -> Unit): Playb
 }
 fun Song.mediaItem(): MediaItem = MediaItem.Builder().setMediaId(id).setUri(Uri.fromFile(File(path)))
     .setMediaMetadata(MediaMetadata.Builder().setTitle(title).setArtist(artist)
+        .setExtras(android.os.Bundle().apply { putLong("durationMs", durationMs) })
         .setArtworkUri(cover.takeIf { it.isNotBlank() }?.let { Uri.fromFile(File(it)) }).build()).build()
 fun playQueue(player: MediaController?, songs: List<Song>, selected: Song) {
     if (player == null) return

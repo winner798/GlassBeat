@@ -80,16 +80,5 @@ fun ThemeScreen(theme: ThemeSettings, model: LibraryModel) {
 
 @Composable
 fun ImportDialog(model: LibraryModel, busy: Boolean, dismiss: () -> Unit, audio: () -> Unit, video: () -> Unit) {
-    var text by remember { mutableStateOf(model.sharedText) }
-    AlertDialog(onDismissRequest = dismiss, title = { Text("让喜欢的声音留下来") }, text = {
-        Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Button(onClick = audio, enabled = !busy, modifier = Modifier.fillMaxWidth()) { Text("导入本地音频") }
-            OutlinedButton(onClick = video, enabled = !busy, modifier = Modifier.fillMaxWidth()) { Text("本地视频提取音轨") }
-            HorizontalDivider()
-            Text("抖音分享", style = MaterialTheme.typography.titleSmall)
-            OutlinedTextField(text, { text = it }, modifier = Modifier.fillMaxWidth(), label = { Text("粘贴完整分享内容或链接") }, minLines = 2, maxLines = 4)
-            Text("也可以在抖音中通过系统分享选择 FavSoda。公开资源可访问时会显示导入预览。", style = MaterialTheme.typography.bodySmall)
-            Text("仅保存你有权使用的内容。", style = MaterialTheme.typography.bodySmall)
-        }
-    }, confirmButton = { TextButton(onClick = { dismiss(); model.resolve(text) }, enabled = text.isNotBlank() && !busy) { Text("解析链接") } }, dismissButton = { TextButton(onClick = dismiss) { Text("关闭") } })
+    ImportSheet(model.sharedText, busy, dismiss, audio, video) { dismiss(); model.resolve(it) }
 }

@@ -35,10 +35,10 @@ fun AppUpdateDialog(model: LibraryModel) {
     }
     if (state == UpdateState.Idle) return
     val busy = state == UpdateState.Checking || state is UpdateState.Downloading
-    AlertDialog(onDismissRequest = { if (busy) model.updater.cancel() else model.updater.dismiss() }, title = {
+    GlassDialog(onDismissRequest = { if (busy) model.updater.cancel() else model.updater.dismiss() }, title = {
         Text(when (state) { UpdateState.Checking -> "正在检查更新"; is UpdateState.Available -> "发现新版本 ${(state as UpdateState.Available).release.version}"; is UpdateState.Downloading -> "正在下载更新"; is UpdateState.Ready -> "更新已准备好"; is UpdateState.Failed -> "更新提示"; else -> "应用更新" })
     }, text = {
-        Column(Modifier.heightIn(max = 380.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(Modifier.heightIn(max = 380.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text("当前版本 ${model.updater.installedVersion}", style = MaterialTheme.typography.bodySmall)
             when (val value = state) {
                 UpdateState.Checking -> { LinearProgressIndicator(Modifier.fillMaxWidth()); Text("从 GitHub Releases 获取最新正式版。") }

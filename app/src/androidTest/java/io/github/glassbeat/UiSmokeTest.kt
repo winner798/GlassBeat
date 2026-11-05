@@ -51,7 +51,7 @@ class UiSmokeTest {
         compose.onNodeWithText("音乐库", useUnmergedTree = true).performClick()
         compose.onNodeWithContentDescription("导入音乐").performClick()
         compose.onNodeWithText("本地视频提取音轨").assertIsDisplayed()
-        compose.onNodeWithText("关闭").performClick()
+        compose.onNodeWithContentDescription("关闭导入").performClick()
         compose.onNodeWithText("First Light").performClick()
         compose.waitUntil(8000) { compose.onAllNodesWithContentDescription("收起播放器").fetchSemanticsNodes().isNotEmpty() }
         compose.waitUntil(8000) { compose.onAllNodesWithContentDescription("暂停").fetchSemanticsNodes().isNotEmpty() }

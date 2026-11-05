@@ -68,14 +68,7 @@ fun ColumnScope.PlayerScreen(state: PlaybackUi, song: Song?, player: MediaContro
             Text("音乐属于此刻", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 22.dp))
         }
     }
-    if (queue) AlertDialog(onDismissRequest = { queue = false }, title = { Text("播放队列") }, text = {
-        Column(Modifier.heightIn(max = 360.dp).verticalScroll(rememberScrollState())) {
-            if (player != null) for (i in 0 until player.mediaItemCount) {
-                val item = player.getMediaItemAt(i)
-                TextButton(onClick = { player.seekToDefaultPosition(i); player.play(); queue = false }, modifier = Modifier.fillMaxWidth()) { Text(item.mediaMetadata.title?.toString() ?: "未命名歌曲", maxLines = 1, overflow = TextOverflow.Ellipsis) }
-            }
-        }
-    }, confirmButton = { TextButton(onClick = { queue = false }) { Text("关闭") } })
+    if (queue) QueueSheet(player) { queue = false }
 }
 
 @Composable
