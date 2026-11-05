@@ -1,12 +1,12 @@
 {
   "packageName": "io.github.glassbeat",
-  "version": "1.0.5",
-  "size": 2730750,
-  "sha256": "6e4fc7e0bcedffba9d9706c7393cc9ccbfa99dbc4ff0674bfa2c368a14e26409",
-  "notes": "FavSoda 1.0.5：增强底部导航的反馈幅度与全局玻璃立体感。\n\n- 底部导航改为弹性移动的玻璃选中胶囊。按下时胶囊扩张，图标放大并上浮，松手柔和回弹；取消按压恢复原标签。\n- 玻璃面板加入宽边倒角、内阴影、双层反射高光和更明显的投影，降低平面灰雾感。\n- Android 13 及以上增加背景专用的实时边缘折射，文字与图标不参与扭曲；旧版 Android 保留绘制的立体边缘。\n- 关闭动效或开启低性能模式时降低效果成本，保持导航可用。\n- 参考 AndroidLiquidGlass 的实际透镜、导航与内阴影源码，独立实现以兼容当前工程；研究来源与实现说明见 docs/GLASS.md。\n\n验证：26 项 JVM 测试、静态检查、Android 10 / Android 15 各 17 项设备测试通过；包含按压预览、取消、完成点击、图像反馈幅度与减少动效的回归测试。\n\n更新：应用内“外观 → 检查更新”，或下载 FavSoda-v1.0.5.apk 覆盖安装。签名与旧版一致，请勿卸载以免丢失应用内音乐。\n\nGlassBeat-v1.0.5.apk 是供旧版更新器使用的同内容兼容文件。\n",
+  "version": "1.0.6",
+  "size": 2730754,
+  "sha256": "d957fc65b6f867d4acf113b6f0de1f7a19bee219ac3bf0c2befe3be7d157b402",
+  "notes": "FavSoda 1.0.6：统一列表层次和交互按钮的玻璃风格。\n\n- 音乐库、歌单、播放队列、歌单选择使用统一卡片行：独立渐变底色、清晰高光边、轻微阴影和更明确的行间距。\n- 当前歌曲增加强调色边框、加粗标题和封面播放角标。\n- 添加、更多、随机播放、迷你播放器、播放控制、文字操作及主题/音乐筛选统一圆角底座、边缘高光和按压反馈。\n- 列表使用轻量绘制，不为每一行增加背景捕获或折射着色器。\n- 保留上一版底部导航的大幅按压、弹性移动胶囊和全局立体玻璃。\n\n验证：26 项 JVM 测试、静态检查，Android 10 / Android 15 各 19 项设备测试通过；新增“更多”不误触播放、当前行标记与筛选选择状态回归测试。\n\n更新：应用内“外观 → 检查更新”，或下载 FavSoda-v1.0.6.apk 覆盖安装。签名与旧版一致，请勿卸载以保留音乐库。\n\nGlassBeat-v1.0.6.apk 为旧版更新器使用的同内容兼容文件。\n",
   "downloadUrls": [
-    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.5/dist/GlassBeat-v1.0.5.apk",
-    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/713073124",
-    "https://github.com/winner798/GlassBeat/releases/download/v1.0.5/GlassBeat-v1.0.5.apk"
+    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.6/dist/GlassBeat-v1.0.6.apk",
+    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/713156890",
+    "https://github.com/winner798/GlassBeat/releases/download/v1.0.6/GlassBeat-v1.0.6.apk"
   ]
 }
