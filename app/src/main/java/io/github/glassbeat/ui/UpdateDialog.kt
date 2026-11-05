@@ -56,16 +56,16 @@ fun AppUpdateDialog(model: LibraryModel) {
         }
     }, confirmButton = {
         when (val value = state) {
-            is UpdateState.Available -> TextButton(onClick = { model.updater.download(value.release) }) { Text("下载更新") }
-            is UpdateState.Ready -> TextButton(onClick = {
+            is UpdateState.Available -> SoftTextButton(onClick = { model.updater.download(value.release) }) { Text("下载更新") }
+            is UpdateState.Ready -> SoftTextButton(onClick = {
                 if (context.packageManager.canRequestPackageInstalls()) install()
                 else try { permission.launch(Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES, Uri.parse("package:${context.packageName}"))) }
                 catch (_: Exception) { model.message = "无法打开安装权限设置，请从系统设置允许 FavSoda 安装应用。" }
             }) { Text("安装更新") }
-            UpdateState.Checking, is UpdateState.Downloading -> TextButton(onClick = model.updater::cancel) { Text("取消") }
-            else -> TextButton(onClick = model.updater::dismiss) { Text("知道了") }
+            UpdateState.Checking, is UpdateState.Downloading -> SoftTextButton(onClick = model.updater::cancel) { Text("取消") }
+            else -> SoftTextButton(onClick = model.updater::dismiss) { Text("知道了") }
         }
     }, dismissButton = {
-        if (!busy) TextButton(onClick = { uriHandler.openUri(ReleaseInfo.RELEASES) }) { Text("打开发布页") }
+        if (!busy) SoftTextButton(onClick = { uriHandler.openUri(ReleaseInfo.RELEASES) }) { Text("打开发布页") }
     })
 }

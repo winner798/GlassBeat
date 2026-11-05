@@ -42,6 +42,20 @@ class OverlayUiTest {
         val directory = File(context.getExternalFilesDir(null), "screenshots").apply { mkdirs() }
         File(directory, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
     }
+    @Test fun buttonsOnlyActivateOnCompletedEnabledPresses() {
+        var clicks = 0
+        var enabled by mutableStateOf(true)
+        content { SoftButton(onClick = { clicks++ }, enabled = enabled) { androidx.compose.material3.Text("触感按钮") } }
+        val button = compose.onNodeWithText("触感按钮")
+        button.performTouchInput { down(center) }
+        compose.runOnIdle { assertEquals(0, clicks) }
+        button.performTouchInput { cancel() }
+        compose.runOnIdle { assertEquals(0, clicks) }
+        button.performTouchInput { click(center) }
+        compose.runOnIdle { assertEquals(1, clicks); enabled = false }
+        button.performTouchInput { click(center) }
+        compose.runOnIdle { assertEquals(1, clicks) }
+    }
     @Test fun importOffersDistinctSourcesAndPreviewsEnteredLink() {
         var audio = 0; var video = 0; var resolved = ""
         content { ImportSheet("", false, {}, { audio++ }, { video++ }, { resolved = it }) }

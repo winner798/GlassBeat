@@ -47,7 +47,7 @@ internal fun SheetHeader(title: String, subtitle: String, closeLabel: String, di
             Text(title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 5.dp))
         }
-        FilledTonalIconButton(onClick = dismiss, colors = IconButtonDefaults.filledTonalIconButtonColors(containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .06f))) {
+        SoftFilledTonalIconButton(onClick = dismiss, colors = IconButtonDefaults.filledTonalIconButtonColors(containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .06f))) {
             Icon(Icons.Rounded.Close, closeLabel, Modifier.size(20.dp))
         }
     }

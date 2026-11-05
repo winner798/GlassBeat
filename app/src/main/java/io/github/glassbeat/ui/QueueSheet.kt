@@ -58,7 +58,7 @@ internal fun QueueSheet(player: Player?, dismiss: () -> Unit) {
                 val primary = MaterialTheme.colorScheme.primary
                 Row(Modifier.fillMaxWidth().clip(shape).background(if (current) primary.copy(alpha = .12f) else MaterialTheme.colorScheme.onSurface.copy(alpha = .025f))
                     .then(if (current) Modifier.border(1.dp, primary.copy(alpha = .25f), shape) else Modifier)
-                    .clickable { player?.seekToDefaultPosition(index); player?.play() }.padding(start = 12.dp, top = 12.dp, bottom = 12.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                    .softClickable { player?.seekToDefaultPosition(index); player?.play() }.padding(start = 12.dp, top = 12.dp, bottom = 12.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                     Box {
                         Artwork(item.mediaMetadata.artworkUri?.toString().orEmpty(), Modifier.size(52.dp))
                         if (current) Box(Modifier.size(52.dp).background(primary.copy(alpha = .65f), RoundedCornerShape(18.dp)), contentAlignment = Alignment.Center) {
@@ -69,14 +69,14 @@ internal fun QueueSheet(player: Player?, dismiss: () -> Unit) {
                         Text(title, maxLines = 2, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleSmall, fontWeight = if (current) FontWeight.Bold else FontWeight.Medium, color = if (current) primary else MaterialTheme.colorScheme.onSurface)
                         Text("$artist${if (duration > 0) " · ${formatTime(duration)}" else ""}", maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 5.dp))
                     }
-                    IconButton(onClick = { player?.removeMediaItem(index) }) { Icon(Icons.Rounded.Close, "移出队列：$title", Modifier.size(17.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    SoftIconButton(onClick = { player?.removeMediaItem(index) }) { Icon(Icons.Rounded.Close, "移出队列：$title", Modifier.size(17.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant) }
                 }
             }
         }
         HorizontalDivider(Modifier.padding(horizontal = 22.dp, vertical = 16.dp), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .08f))
         Row(Modifier.fillMaxWidth().padding(horizontal = 22.dp), verticalAlignment = Alignment.CenterVertically) {
             Text("移出队列不会删除音乐", Modifier.weight(1f), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            TextButton(onClick = { if (queue.current in queue.items.indices) scope.launch { list.animateScrollToItem(queue.current) } }, enabled = queue.current in queue.items.indices) { Text("定位当前") }
+            SoftTextButton(onClick = { if (queue.current in queue.items.indices) scope.launch { list.animateScrollToItem(queue.current) } }, enabled = queue.current in queue.items.indices) { Text("定位当前") }
         }
     }
 }

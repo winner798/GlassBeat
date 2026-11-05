@@ -49,7 +49,7 @@ internal fun SongMenuSheet(song: Song, dismiss: () -> Unit, favorite: () -> Unit
 
 @Composable
 private fun MenuTile(title: String, icon: ImageVector, modifier: Modifier, click: () -> Unit) {
-    Surface(onClick = click, modifier = modifier, shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.primary.copy(alpha = .10f)) {
+    SoftSurface(onClick = click, modifier = modifier, shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.primary.copy(alpha = .10f)) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Icon(icon, null, Modifier.size(23.dp), tint = MaterialTheme.colorScheme.primary)
             Text(title, style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
@@ -59,7 +59,7 @@ private fun MenuTile(title: String, icon: ImageVector, modifier: Modifier, click
 
 @Composable
 private fun MenuLine(title: String, detail: String, icon: ImageVector, danger: Boolean = false, click: () -> Unit) {
-    Surface(onClick = click, shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .025f)) {
+    SoftSurface(onClick = click, shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .025f)) {
         Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
             OverlayIcon(icon, danger = danger)
             Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {

@@ -30,13 +30,13 @@ internal fun ImportSheet(initialText: String, busy: Boolean, dismiss: () -> Unit
             Row(Modifier.fillMaxWidth().padding(top = 12.dp), verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Rounded.Link, null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.primary)
                 Text("抖音分享", Modifier.weight(1f).padding(start = 8.dp), style = MaterialTheme.typography.titleSmall)
-                TextButton(onClick = { clipboard.getText()?.text?.let { text = it } }, enabled = !busy) { Text("粘贴") }
+                SoftTextButton(onClick = { clipboard.getText()?.text?.let { text = it } }, enabled = !busy) { Text("粘贴") }
             }
             OutlinedTextField(text, { text = it }, modifier = Modifier.fillMaxWidth(), enabled = !busy,
                 placeholder = { Text("粘贴完整分享文案或视频链接", style = MaterialTheme.typography.bodyMedium) },
                 minLines = 2, maxLines = 4, shape = RoundedCornerShape(18.dp))
             Text("也可在抖音系统分享中选择 FavSoda，先预览再保存。", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-            Button(onClick = { resolve(text) }, enabled = text.isNotBlank() && !busy, modifier = Modifier.fillMaxWidth().height(52.dp), shape = RoundedCornerShape(17.dp)) {
+            SoftButton(onClick = { resolve(text) }, enabled = text.isNotBlank() && !busy, modifier = Modifier.fillMaxWidth().height(52.dp), shape = RoundedCornerShape(17.dp)) {
                 Text("解析并预览", fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.width(8.dp)); Icon(Icons.AutoMirrored.Rounded.ArrowForward, null, Modifier.size(18.dp))
             }
@@ -50,7 +50,7 @@ internal fun ImportSheet(initialText: String, busy: Boolean, dismiss: () -> Unit
 
 @Composable
 private fun SourceCard(title: String, detail: String, icon: ImageVector, enabled: Boolean, click: () -> Unit) {
-    Surface(onClick = click, enabled = enabled, shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .045f)) {
+    SoftSurface(onClick = click, enabled = enabled, shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.onSurface.copy(alpha = .045f)) {
         Row(Modifier.fillMaxWidth().padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
             OverlayIcon(icon)
             Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
