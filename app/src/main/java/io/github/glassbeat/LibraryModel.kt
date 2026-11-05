@@ -45,7 +45,13 @@ class LibraryModel(app: Application) : AndroidViewModel(app) {
         catch (e: CancellationException) { throw e }
         catch (e: Exception) { message = e.message ?: "操作失败，请重试" }
     }
-    fun saveTheme(settings: ThemeSettings) = action { themes.save(settings) }
+    fun updateTheme(update: (ThemeSettings) -> ThemeSettings) = action {
+        val current = themes.settings.first()
+        val next = update(current)
+        themes.save(next)
+        if (current.background.isNotBlank() && current.background != next.background)
+            withContext(Dispatchers.IO) { File(current.background).delete() }
+    }
     fun favorite(song: Song) = action { repository.dao.favorite(song.id) }
     fun rename(song: Song, title: String) = action {
         require(title.isNotBlank()) { "歌曲名不能为空" }
@@ -74,8 +80,8 @@ class LibraryModel(app: Application) : AndroidViewModel(app) {
             val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
             BitmapFactory.decodeFile(target.absolutePath, bounds)
             require(bounds.outWidth > 0 && bounds.outHeight > 0) { "无法识别图片，请选择 JPG、PNG 或 WebP" }
-            val old = if (song == null) theme.value.background else repository.dao.song(song.id)?.cover.orEmpty()
-            if (song == null) themes.save(theme.value.copy(background = target.absolutePath))
+            val old = if (song == null) themes.settings.first().background else repository.dao.song(song.id)?.cover.orEmpty()
+            if (song == null) themes.save(themes.settings.first().copy(background = target.absolutePath))
             else repository.dao.cover(song.id, target.absolutePath)
             if (old.isNotBlank()) withContext(Dispatchers.IO) { File(old).delete() }
         } catch (e: Exception) { target.delete(); throw e }
@@ -85,17 +91,17 @@ class LibraryModel(app: Application) : AndroidViewModel(app) {
         try {
             repository.copyUri(uri, target, 10L * 1024 * 1024)
             withContext(Dispatchers.IO) { Typeface.createFromFile(target) }
-            val old = theme.value.font
-            themes.save(theme.value.copy(font = target.absolutePath))
+            val old = themes.settings.first().font
+            themes.save(themes.settings.first().copy(font = target.absolutePath))
             if (old.isNotBlank()) withContext(Dispatchers.IO) { File(old).delete() }
         } catch (e: Exception) { target.delete(); throw IllegalArgumentException("字体导入失败，请选择有效的 TTF 或 OTF 文件", e) }
     }
     fun clearBackground() = action {
-        val old = theme.value.background; themes.save(theme.value.copy(background = ""))
+        val old = themes.settings.first().background; themes.save(themes.settings.first().copy(background = ""))
         if (old.isNotBlank()) withContext(Dispatchers.IO) { File(old).delete() }
     }
     fun clearFont() = action {
-        val old = theme.value.font; themes.save(theme.value.copy(font = ""))
+        val old = themes.settings.first().font; themes.save(themes.settings.first().copy(font = ""))
         if (old.isNotBlank()) withContext(Dispatchers.IO) { File(old).delete() }
     }
     fun receive(intent: Intent?) {

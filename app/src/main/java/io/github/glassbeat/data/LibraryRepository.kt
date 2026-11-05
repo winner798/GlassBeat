@@ -24,7 +24,15 @@ class LibraryRepository(private val context: Context) {
         if (file.exists()) {
             val array = JSONArray(file.readText())
             val songs = (0 until array.length()).map { array.getJSONObject(it) }.map {
-                Song(it.getString("id"), it.getString("title"), it.getString("path"))
+                val original = Song(it.getString("id"), it.getString("title"), it.getString("path"))
+                val meta = MediaMetadataRetriever()
+                try {
+                    meta.setDataSource(original.path)
+                    original.copy(artist = meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST) ?: original.artist,
+                        durationMs = meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 0,
+                        mime = meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE) ?: original.mime)
+                } catch (_: Exception) { original }
+                finally { meta.release() }
             }.filter { File(it.path).isFile }
             db.withTransaction { dao.importLegacy(songs) }
             check(file.renameTo(File(context.filesDir, "library.json.migrated"))) { "旧音乐库备份失败" }

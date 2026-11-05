@@ -49,6 +49,15 @@ class LibraryIntegrationTest {
             assertTrue(File(context.filesDir, "library.json.migrated").exists())
         } finally { repo.dao.delete("legacy-test"); file.delete(); File(context.filesDir, "library.json.migrated").delete() }
     }
+    @Test fun themeSettingsPersistAcrossStoreInstances() = runBlocking {
+        val store = ThemeStore(context)
+        val original = store.settings.first()
+        try {
+            val expected = original.copy(light = true, accent = 0xFF74CFC8, opacity = .3f, blur = 9f, lowPower = true)
+            store.save(expected)
+            assertEquals(expected, ThemeStore(context).settings.first())
+        } finally { store.save(original) }
+    }
     @Test fun videoAudioExtractionProducesPlayableAudioOnlyFile() = runBlocking {
         val input = File(context.cacheDir, "fixture.mp4")
         val output = File(context.cacheDir, "extracted.m4a")
