@@ -1,12 +1,12 @@
 {
   "packageName": "io.github.glassbeat",
-  "version": "1.0.7",
-  "size": 2782198,
-  "sha256": "261fd42e269e0a36e7b22e5cb6ff63f468ece9ff66a107aa1d6635cee42fbba4",
-  "notes": "FavSoda 1.0.7：收敛底部导航的视觉重量，并重新设计应用图标。\n\n- 底部导航减弱描边、反光和阴影，移除内层厚玻璃胶囊，改为轻柔的滑动选中底色。\n- 缩小导航高度、图标放大与回弹幅度，保留清晰、平顺的选中反馈。\n- 其他页面和列表继续保留已有玻璃材质与卡片层次。\n- 新图标使用水蓝与淡紫玻璃音符，融合 FavSoda 字母形态和气泡细节，配深色渐变背景。\n- 接入 Android 自适应图标、圆形入口和 Android 13+ 主题单色版本，验证可见前景安全区，并导出圆形及圆角方形裁切预览。\n\n验证：26 项 JVM 测试、静态检查，Android 10 / Android 15 各 20 项设备测试通过，覆盖导航交互与图标资源加载、裁切安全区。\n\n更新：应用内“外观 → 检查更新”，或下载 FavSoda-v1.0.7.apk 覆盖安装。签名与旧版一致，请勿卸载以保留音乐库。\n\nGlassBeat-v1.0.7.apk 为旧版更新器使用的同内容兼容文件。\n",
+  "version": "1.0.8",
+  "size": 2782202,
+  "sha256": "5d02ed892175e6cb8e2ca3390bd2db8749ce184b0a6ede850bf45ff2c3aaa8be",
+  "notes": "FavSoda 1.0.8：应用图标换用浅色背景。\n\n- 图标底板改为珍珠白到淡蓝的柔和渐变，保留玻璃音符与气泡。\n- 保留 1.0.7 的轻柔底部导航、自适应圆形/圆角方形裁切及主题单色版本。\n\n验证：26 项 JVM 测试、静态检查，Android 10 / Android 15 各 20 项设备测试通过。\n\n在应用内“外观 → 检查更新”，或下载 FavSoda-v1.0.8.apk 覆盖安装，保留已有音乐库。\n\nGlassBeat-v1.0.8.apk 为旧版更新器使用的同内容兼容文件。\n",
   "downloadUrls": [
-    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.7/dist/GlassBeat-v1.0.7.apk",
-    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/713209496",
-    "https://github.com/winner798/GlassBeat/releases/download/v1.0.7/GlassBeat-v1.0.7.apk"
+    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.8/dist/GlassBeat-v1.0.8.apk",
+    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/713234937",
+    "https://github.com/winner798/GlassBeat/releases/download/v1.0.8/GlassBeat-v1.0.8.apk"
   ]
 }
