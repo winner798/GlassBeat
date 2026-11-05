@@ -55,6 +55,9 @@ class UiSmokeTest {
         compose.onNodeWithText("First Light").performClick()
         compose.waitUntil(8000) { compose.onAllNodesWithContentDescription("收起播放器").fetchSemanticsNodes().isNotEmpty() }
         screenshot("player")
+        compose.waitUntil(8000) { compose.onAllNodesWithContentDescription("播放").fetchSemanticsNodes().isNotEmpty() }
+        compose.onNodeWithContentDescription("播放").performClick()
+        compose.waitUntil(5000) { compose.onAllNodesWithContentDescription("暂停").fetchSemanticsNodes().isNotEmpty() }
         compose.onNodeWithContentDescription("收起播放器").performClick()
     }
     @Test fun malformedSharedTextProducesClearFailure() {

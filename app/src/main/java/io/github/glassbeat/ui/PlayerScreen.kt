@@ -59,7 +59,7 @@ fun ColumnScope.PlayerScreen(state: PlaybackUi, song: Song?, player: MediaContro
                     Row(Modifier.fillMaxWidth().padding(top = 16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         IconButton(onClick = { player?.shuffleModeEnabled = !state.shuffle }) { Icon(Icons.Rounded.Shuffle, if (state.shuffle) "关闭随机播放" else "开启随机播放", tint = if (state.shuffle) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant) }
                         IconButton(onClick = { player?.seekToPrevious() }) { Icon(Icons.Rounded.SkipPrevious, "上一首", Modifier.size(32.dp)) }
-                        FilledIconButton(onClick = { if (state.playing) player?.pause() else player?.play() }, modifier = Modifier.size(68.dp)) {
+                        FilledIconButton(onClick = { togglePlayback(player) }, modifier = Modifier.size(68.dp)) {
                             if (state.buffering) CircularProgressIndicator(Modifier.size(24.dp), strokeWidth = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
                             else Icon(if (state.playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow, if (state.playing) "暂停" else "播放", Modifier.size(34.dp))
                         }
@@ -90,7 +90,7 @@ fun MiniPlayer(state: PlaybackUi, player: MediaController?, open: () -> Unit) {
                 Text(state.title, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleSmall)
                 Text(state.artist, maxLines = 1, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-            IconButton(onClick = { if (state.playing) player?.pause() else player?.play() }) { Icon(if (state.playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow, "播放或暂停") }
+            IconButton(onClick = { togglePlayback(player) }) { Icon(if (state.playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow, "播放或暂停") }
             IconButton(onClick = { player?.seekToNextMediaItem() }) { Icon(Icons.Rounded.SkipNext, "下一首") }
         }
         LinearProgressIndicator(progress = { if (state.duration > 0) state.position.toFloat() / state.duration else 0f }, modifier = Modifier.fillMaxWidth().height(2.dp))

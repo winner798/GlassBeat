@@ -37,10 +37,19 @@ fun Song.mediaItem(): MediaItem = MediaItem.Builder().setMediaId(id).setUri(Uri.
         .setArtworkUri(cover.takeIf { it.isNotBlank() }?.let { Uri.fromFile(File(it)) }).build()).build()
 fun playQueue(player: MediaController?, songs: List<Song>, selected: Song) {
     if (player == null) return
-    if (player.currentMediaItem?.mediaId == selected.id) { if (!player.isPlaying) player.play(); return }
+    if (player.currentMediaItem?.mediaId == selected.id) { if (!player.isPlaying) { if (player.playbackState == Player.STATE_ENDED) player.seekToDefaultPosition(); player.play() }; return }
     val index = songs.indexOfFirst { it.id == selected.id }
     if (index < 0) return
     player.setMediaItems(songs.map { it.mediaItem() }, index, 0)
     player.prepare(); player.play()
 }
 fun formatTime(ms: Long): String = "%d:%02d".format(ms.coerceAtLeast(0) / 60000, ms.coerceAtLeast(0) / 1000 % 60)
+
+fun togglePlayback(player: Player?) {
+    if (player == null) return
+    if (player.isPlaying) player.pause()
+    else {
+        if (player.playbackState == Player.STATE_ENDED) player.seekToDefaultPosition()
+        player.play()
+    }
+}
