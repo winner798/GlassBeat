@@ -8,7 +8,7 @@ val releaseStore = providers.environmentVariable("GLASSBEAT_KEYSTORE").orNull
 android {
     namespace = "io.github.glassbeat"
     compileSdk = 35
-    defaultConfig { applicationId = "io.github.glassbeat"; minSdk = 26; targetSdk = 35; versionCode = 14; versionName = "1.0.4" }
+    defaultConfig { applicationId = "io.github.glassbeat"; minSdk = 26; targetSdk = 35; versionCode = 15; versionName = "1.0.5" }
     defaultConfig { testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
     signingConfigs {
         if (releaseStore != null) create("distribution") {

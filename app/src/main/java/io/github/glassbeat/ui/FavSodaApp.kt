@@ -148,15 +148,7 @@ fun FavSodaApp(model: LibraryModel, player: MediaController?) {
                                 }
                             }
                             if (playback.id.isNotBlank()) MiniPlayer(playback, player) { full = true }
-                            GlassPanel(Modifier.fillMaxWidth().padding(vertical = 12.dp)) {
-                                Row(Modifier.fillMaxWidth().padding(6.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
-                                    listOf(Icons.Rounded.LibraryMusic to "音乐库", Icons.Rounded.QueueMusic to "歌单", Icons.Rounded.Palette to "外观").forEachIndexed { i, (icon, label) ->
-                                        SoftTextButton(onClick = { tab = i; query = ""; playlistId = null }, colors = ButtonDefaults.textButtonColors(contentColor = if (tab == i) accent else colors.onSurfaceVariant)) {
-                                            Icon(icon, null, Modifier.size(20.dp)); Spacer(Modifier.width(6.dp)); Text(label)
-                                        }
-                                    }
-                                }
-                            }
+                            GlassNavigation(tab, { tab = it; query = ""; playlistId = null }, Modifier.fillMaxWidth().padding(vertical = 12.dp))
                         }
                     }
                     task?.let { current ->

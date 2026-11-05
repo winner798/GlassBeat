@@ -30,18 +30,38 @@ fun GlassPanel(modifier: Modifier = Modifier, content: @Composable ColumnScope.(
     val t = LocalAppearance.current
     val shape = RoundedCornerShape(28.dp)
     val surface = MaterialTheme.colorScheme.surface
+    val tintAlpha = (t.opacity * .72f).coerceIn(.10f, .78f)
     val haze = if (!t.lowPower && t.blur > 0) Modifier.hazeEffect(LocalGlass.current,
         HazeStyle(backgroundColor = MaterialTheme.colorScheme.background,
-            tints = listOf(HazeTint(surface.copy(alpha = t.opacity))), blurRadius = t.blur.dp,
-            noiseFactor = .008f, fallbackTint = HazeTint(surface.copy(alpha = (.20f + t.opacity * .65f).coerceIn(.30f, .86f)))))
-        else Modifier.background(surface.copy(alpha = t.opacity.coerceIn(.15f, .95f)))
-    Column(modifier.then(if (!t.lowPower) Modifier.shadow(12.dp, shape, clip = false, ambientColor = Color.Black.copy(alpha = .12f), spotColor = Color.Black.copy(alpha = .16f)) else Modifier).clip(shape).then(haze)
-        .background(Brush.linearGradient(listOf(Color.White.copy(alpha = if (t.light) .28f else .12f), Color.Transparent, Color.White.copy(alpha = .03f))))
-        .drawWithCache {
-            val reflection = Brush.radialGradient(listOf(Color.White.copy(alpha = if (t.light) .14f else .07f), Color.Transparent), center = Offset(size.width * .12f, 0f), radius = size.width.coerceAtLeast(1f) * .8f)
-            onDrawBehind { drawRect(reflection) }
-        }
-        .border(1.dp, Brush.linearGradient(listOf(Color.White.copy(alpha = .48f), Color.White.copy(alpha = .10f), Color.White.copy(alpha = .025f), Color.White.copy(alpha = .22f))), shape), content = content)
+            tints = listOf(HazeTint(surface.copy(alpha = tintAlpha))), blurRadius = t.blur.dp,
+            noiseFactor = .006f, fallbackTint = HazeTint(surface.copy(alpha = (.16f + t.opacity * .56f).coerceIn(.24f, .78f)))))
+        else Modifier.background(surface.copy(alpha = tintAlpha))
+    Box(modifier.then(if (!t.lowPower) Modifier.shadow(24.dp, shape, clip = false,
+        ambientColor = Color.Black.copy(alpha = .26f), spotColor = Color.Black.copy(alpha = .38f)) else Modifier).clip(shape)) {
+        // This layer contains only the backdrop, so refraction cannot warp text or icons.
+        Box(Modifier.matchParentSize().glassLens(!t.lowPower && t.blur > 0).then(haze)
+            .background(Brush.linearGradient(listOf(Color.White.copy(alpha = if (t.light) .30f else .16f), Color.Transparent, Color.White.copy(alpha = .055f)))))
+        Column(Modifier.fillMaxWidth().drawWithCache {
+            val radius = minOf(28.dp.toPx(), size.minDimension * .5f)
+            val reflection = Brush.radialGradient(listOf(Color.White.copy(alpha = if (t.light) .19f else .10f), Color.Transparent),
+                center = Offset(size.width * .08f, 0f), radius = size.width.coerceAtLeast(1f) * .85f)
+            val edge = Brush.linearGradient(listOf(Color.White.copy(alpha = .80f), Color.White.copy(alpha = .18f),
+                Color.White.copy(alpha = .025f), Color.White.copy(alpha = .48f)))
+            val bevel = Brush.verticalGradient(listOf(Color.White.copy(alpha = .22f), Color.Transparent, Color.Black.copy(alpha = if (t.light) .09f else .28f)))
+            onDrawWithContent {
+                drawRect(reflection)
+                drawContent()
+                val inset = 3.dp.toPx().coerceAtMost(size.minDimension * .2f)
+                if (!t.lowPower && size.minDimension > inset * 2) {
+                    drawRoundRect(bevel, topLeft = Offset(inset, inset), size = androidx.compose.ui.geometry.Size(size.width - inset * 2, size.height - inset * 2),
+                        cornerRadius = androidx.compose.ui.geometry.CornerRadius((radius - inset).coerceAtLeast(0f)), style = androidx.compose.ui.graphics.drawscope.Stroke(5.dp.toPx()))
+                }
+                drawRoundRect(edge, topLeft = Offset(.6.dp.toPx(), .6.dp.toPx()),
+                    size = androidx.compose.ui.geometry.Size((size.width - 1.2.dp.toPx()).coerceAtLeast(0f), (size.height - 1.2.dp.toPx()).coerceAtLeast(0f)),
+                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(radius), style = androidx.compose.ui.graphics.drawscope.Stroke(1.2.dp.toPx()))
+            }
+        }, content = content)
+    }
 }
 
 @Composable
@@ -60,6 +80,12 @@ fun GlassBackground(theme: ThemeSettings, haze: HazeState) {
             Box(Modifier.fillMaxSize().background(base.copy(alpha = if (theme.light) .50f else .62f)))
         } else {
             Canvas(Modifier.fillMaxSize()) {
+                val ribbon = androidx.compose.ui.graphics.Path().apply {
+                    moveTo(-size.width * .15f, size.height * .32f)
+                    cubicTo(size.width * .42f, size.height * .06f, size.width * .22f, size.height * .84f, size.width * 1.2f, size.height * .61f)
+                }
+                drawPath(ribbon, Brush.linearGradient(listOf(accent.copy(alpha = .14f), Color(0xFF9BE8EF).copy(alpha = .08f), Color.Transparent)),
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(size.width * .055f))
                 drawCircle(Brush.radialGradient(listOf(accent.copy(alpha = .42f), Color.Transparent),
                     center = Offset(size.width * (.10f + drift), size.height * .13f), radius = size.width * .9f), radius = size.width * .9f, center = Offset(size.width * (.10f + drift), size.height * .13f))
                 drawCircle(Brush.radialGradient(listOf(Color(0xFF60D6CE).copy(alpha = .24f), Color.Transparent),
