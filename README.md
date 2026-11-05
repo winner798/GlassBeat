@@ -6,6 +6,12 @@
 
 **Kotlin · Jetpack Compose · Media3 · Room · DataStore · Haze**
 
+<p>
+  <img src="docs/screenshots/library.png" width="230" alt="深色音乐库" />
+  <img src="docs/screenshots/themes.png" width="230" alt="玻璃主题编辑器" />
+  <img src="docs/screenshots/player.png" width="230" alt="浅色全屏播放器" />
+</p>
+
 ## 功能
 
 - **本地导入**：系统文件选择器批量导入 MP3、M4A、FLAC、WAV、OGG 等音频，复制到应用内保存，重启不丢失。可识别格式受系统解码器限制。
@@ -20,7 +26,7 @@
 
 ## 安装与升级
 
-APK 将在 [Releases](https://github.com/winner798/GlassBeat/releases) 提供；开发构建可在 [Actions](https://github.com/winner798/GlassBeat/actions) 的产物中下载。
+APK 已在 [Releases](https://github.com/winner798/GlassBeat/releases) 提供；开发构建可在 [Actions](https://github.com/winner798/GlassBeat/actions) 的产物中下载。
 
 最低 Android 8.0（API 26）。Android 12 及以上支持实时背景模糊，旧设备自动回退为半透明材质。
 
@@ -69,5 +75,6 @@ CI 包含 Android 10 / Android 15 模拟器验证，覆盖 Room 关系与旧版�
 - [依赖与许可](docs/DEPENDENCIES.md)
 - [贡献指南](CONTRIBUTING.md)
 - [签名与正式构建](docs/SIGNING.md)
+- [更新记录](CHANGELOG.md)
 
 Apache-2.0。独立新建工程，未复制其他播放器源码。
