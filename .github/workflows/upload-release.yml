@@ -28,6 +28,9 @@ jobs:
           mkdir -p release-bundle
           git show "FETCH_HEAD:dist/GlassBeat-v${VERSION}.apk" > "release-bundle/GlassBeat-v${VERSION}.apk"
           git show FETCH_HEAD:dist/SHA256SUMS > release-bundle/SHA256SUMS
+          if git cat-file -e "FETCH_HEAD:dist/FavSoda-v${VERSION}.apk" 2>/dev/null; then
+            git show "FETCH_HEAD:dist/FavSoda-v${VERSION}.apk" > "release-bundle/FavSoda-v${VERSION}.apk"
+          fi
           cd release-bundle
           sha256sum -c SHA256SUMS
       - name: Upload to draft release
@@ -37,4 +40,4 @@ jobs:
         run: |
           [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
           gh release view "v${VERSION}" >/dev/null 2>&1 || gh release create "v${VERSION}" --draft --target main --generate-notes
-          gh release upload "v${VERSION}" "release-bundle/GlassBeat-v${VERSION}.apk" release-bundle/SHA256SUMS --clobber
+          gh release upload "v${VERSION}" release-bundle/*.apk release-bundle/SHA256SUMS --clobber

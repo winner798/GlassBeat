@@ -12,28 +12,34 @@ data class PlaybackUi(val id: String = "", val title: String = "", val artist: S
     val buffering: Boolean = false, val position: Long = 0, val duration: Long = 0, val shuffle: Boolean = false, val repeat: Boolean = false)
 @Composable
 fun rememberPlayback(player: MediaController?, onError: (String) -> Unit): PlaybackUi {
-    var state by remember { mutableStateOf(PlaybackUi()) }
+    var state by remember(player) { mutableStateOf(player.playbackUi()) }
     val errorHandler by rememberUpdatedState(onError)
     DisposableEffect(player) {
         val listener = object : Player.Listener {
+            override fun onEvents(player: Player, events: Player.Events) { state = player.playbackUi() }
             override fun onPlayerError(error: PlaybackException) { errorHandler("播放失败：文件损坏、文件不存在或设备不支持此编码。可尝试重新导入。") }
         }
         player?.addListener(listener)
+        state = player.playbackUi()
         onDispose { player?.removeListener(listener) }
     }
     LaunchedEffect(player) {
         while (true) {
-            state = if (player == null) PlaybackUi() else PlaybackUi(player.currentMediaItem?.mediaId.orEmpty(),
-                player.mediaMetadata.title?.toString().orEmpty(), player.mediaMetadata.artist?.toString().orEmpty(),
-                player.mediaMetadata.artworkUri?.toString().orEmpty(), player.isPlaying, player.playbackState == Player.STATE_BUFFERING,
-                player.currentPosition.coerceAtLeast(0), player.duration.coerceAtLeast(0), player.shuffleModeEnabled, player.repeatMode == Player.REPEAT_MODE_ONE)
+            state = player.playbackUi()
             delay(400)
         }
     }
     return state
 }
+private fun Player?.playbackUi(): PlaybackUi = if (this == null) PlaybackUi() else PlaybackUi(
+    currentMediaItem?.mediaId.orEmpty(), mediaMetadata.title?.toString().orEmpty(),
+    mediaMetadata.artist?.toString().orEmpty(), mediaMetadata.artworkUri?.toString().orEmpty(),
+    isPlaying, playbackState == Player.STATE_BUFFERING, currentPosition.coerceAtLeast(0),
+    duration.coerceAtLeast(0), shuffleModeEnabled, repeatMode == Player.REPEAT_MODE_ONE)
+
 fun Song.mediaItem(): MediaItem = MediaItem.Builder().setMediaId(id).setUri(Uri.fromFile(File(path)))
     .setMediaMetadata(MediaMetadata.Builder().setTitle(title).setArtist(artist)
+        .setExtras(android.os.Bundle().apply { putLong("durationMs", durationMs) })
         .setArtworkUri(cover.takeIf { it.isNotBlank() }?.let { Uri.fromFile(File(it)) }).build()).build()
 fun playQueue(player: MediaController?, songs: List<Song>, selected: Song) {
     if (player == null) return

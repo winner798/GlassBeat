@@ -42,6 +42,22 @@ class PlaybackProgressTest {
         assertEquals(actual.toFloat(), slider.fetchSemanticsNode().config[SemanticsProperties.ProgressBarRangeInfo].current, 2f)
     }
 
+    @Test fun playingProgressRefreshesOnConsecutiveFramesWithoutParentUpdates() {
+        compose.mainClock.autoAdvance = false
+        var actual = 10_000L
+        compose.setContent {
+            MaterialTheme { PlaybackProgress("song", 100_000, true, false, { actual }, {}) }
+        }
+        val slider = compose.onNodeWithTag("playback-progress")
+        compose.mainClock.advanceTimeByFrame()
+        compose.runOnIdle { actual = 10_016 }
+        compose.mainClock.advanceTimeBy(32)
+        assertEquals(10_016f, slider.fetchSemanticsNode().config[SemanticsProperties.ProgressBarRangeInfo].current, 1f)
+        compose.runOnIdle { actual = 10_032 }
+        compose.mainClock.advanceTimeBy(32)
+        assertEquals(10_032f, slider.fetchSemanticsNode().config[SemanticsProperties.ProgressBarRangeInfo].current, 1f)
+    }
+
     @Test fun changingTrackClearsUnacknowledgedSeek() {
         var id by mutableStateOf("first")
         var actual = 10_000L

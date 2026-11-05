@@ -1,4 +1,4 @@
-# GlassBeat
+# FavSoda
 
 [![Android CI](https://github.com/winner798/GlassBeat/actions/workflows/android.yml/badge.svg)](https://github.com/winner798/GlassBeat/actions/workflows/android.yml)
 
@@ -28,6 +28,8 @@
 
 APK 已在 [Releases](https://github.com/winner798/GlassBeat/releases) 提供；开发构建可在 [Actions](https://github.com/winner798/GlassBeat/actions) 的产物中下载。
 
+原名 GlassBeat。为兼容已安装版本，包名和 GitHub 仓库地址保持不变；新版本显示名称为 FavSoda。
+
 最低 Android 8.0（API 26）。Android 12 及以上支持实时背景模糊，旧设备自动回退为半透明材质。
 
 **覆盖升级要求 APK 签名相同。** 不要为了安装不同签名的开发 APK 直接卸载旧版；先导出重要音乐。0.1.0 的 JSON 音乐库和深浅色设置会自动迁移到 Room / DataStore，旧索引保留为备份。
@@ -35,7 +37,7 @@ APK 已在 [Releases](https://github.com/winner798/GlassBeat/releases) 提供；
 ## 使用
 
 1. 右上角 `＋` → 选择本地音频或视频。导入后点歌曲播放。
-2. 从抖音的系统分享入口选择 GlassBeat，或在导入窗口粘贴完整分享内容。
+2. 从抖音的系统分享入口选择 FavSoda，或在导入窗口粘贴完整分享内容。
 3. 解析成功后确认有权保存，点击“保存到音乐库”；解析失败时选择“本地视频提取”。
 4. 歌曲右侧 `···` 可收藏、添加歌单、改名、编辑封面、导出或删除。
 5. 在“外观”中调整主题；低性能模式关闭背景动画和实时模糊。

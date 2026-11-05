@@ -29,7 +29,7 @@ data class ReleaseInfo(val version: String, val notes: String, val url: String, 
             val asset = candidates.firstOrNull { it.optString("name").startsWith("GlassBeat-", true) } ?: candidates.singleOrNull()
                 ?: error("此版本尚未提供可安装的正式 APK")
             val url = asset.optString("url").takeIf { it.isNotBlank() } ?: asset.getString("browser_download_url")
-            require(validAssetUrl(url)) { "更新文件不是来自 GlassBeat 发布仓库" }
+            require(validAssetUrl(url)) { "更新文件不是来自 FavSoda 发布仓库" }
             val digest = asset.optString("digest").removePrefix("sha256:").takeIf { it.matches(Regex("[0-9a-fA-F]{64}")) }
             val raw = "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/$version/dist/${asset.getString("name")}"
             val alternatives = listOf(url, asset.optString("browser_download_url"), raw).filter { validAssetUrl(it) }.distinct()

@@ -31,7 +31,7 @@ import io.github.glassbeat.data.*
 import java.io.File
 
 @Composable
-fun GlassBeatApp(model: LibraryModel, player: MediaController?) {
+fun FavSodaApp(model: LibraryModel, player: MediaController?) {
     val songs by model.songs.collectAsStateWithLifecycle()
     val playlists by model.playlists.collectAsStateWithLifecycle()
     val memberships by model.memberships.collectAsStateWithLifecycle()
@@ -99,28 +99,28 @@ fun GlassBeatApp(model: LibraryModel, player: MediaController?) {
                         } else {
                             Row(Modifier.padding(top = 22.dp, bottom = 18.dp), verticalAlignment = Alignment.CenterVertically) {
                                 Column(Modifier.weight(1f)) {
-                                    Text(if (tab == 0) "GlassBeat" else if (tab == 1) selectedPlaylist?.name ?: "你的歌单" else "外观工作室", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
+                                    Text(if (tab == 0) "FavSoda" else if (tab == 1) selectedPlaylist?.name ?: "你的歌单" else "外观工作室", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
                                     Text(if (tab == 2) "让音乐拥有你的样子" else "离线收藏 · 自由聆听", color = colors.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
                                 }
-                                if (selectedPlaylist != null && tab == 1) IconButton(onClick = { playlistId = null }) { Icon(Icons.Rounded.ArrowBack, "返回歌单") }
-                                else IconButton(onClick = { importDialog = true }, enabled = task == null) { Icon(Icons.Rounded.Add, "导入音乐") }
+                                if (selectedPlaylist != null && tab == 1) SoftIconButton(onClick = { playlistId = null }) { Icon(Icons.Rounded.ArrowBack, "返回歌单") }
+                                else SoftIconButton(onClick = { importDialog = true }, enabled = task == null) { Icon(Icons.Rounded.Add, "导入音乐") }
                             }
                             if (tab == 2) {
                                 Box(Modifier.weight(1f)) { ThemeScreen(theme, model) }
                             } else if (tab == 1 && selectedPlaylist == null) {
                                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                                     Text("${playlists.size} 个歌单", color = colors.onSurfaceVariant)
-                                    TextButton(onClick = { playlistDialog = true }) { Text("＋ 新建歌单") }
+                                    SoftTextButton(onClick = { playlistDialog = true }) { Text("＋ 新建歌单") }
                                 }
                                 if (playlists.isEmpty()) EmptyLibrary("把喜欢的歌放在一起", "新建歌单后，在歌曲菜单中添加音乐。", Modifier.weight(1f))
                                 else LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
                                     items(playlists, key = { it.id }) { list ->
                                         GlassPanel {
-                                            Row(Modifier.fillMaxWidth().clickable { playlistId = list.id; query = "" }.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
+                                            Row(Modifier.fillMaxWidth().softClickable { playlistId = list.id; query = "" }.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
                                                 Icon(Icons.Rounded.QueueMusic, null, Modifier.size(32.dp), tint = accent)
                                                 Column(Modifier.weight(1f).padding(start = 14.dp)) { Text(list.name, style = MaterialTheme.typography.titleMedium); Text("${memberships.count { it.playlistId == list.id }} 首", style = MaterialTheme.typography.bodySmall) }
                                                 var menu by remember { mutableStateOf(false) }
-                                                Box { IconButton(onClick = { menu = true }) { Icon(Icons.Rounded.MoreVert, "歌单菜单") }
+                                                Box { SoftIconButton(onClick = { menu = true }) { Icon(Icons.Rounded.MoreVert, "歌单菜单") }
                                                     DropdownMenu(menu, { menu = false }) {
                                                         DropdownMenuItem(text = { Text("重命名") }, onClick = { menu = false; editingPlaylist = list })
                                                         DropdownMenuItem(text = { Text("删除歌单") }, onClick = { menu = false; deletingPlaylist = list })
@@ -138,7 +138,7 @@ fun GlassBeatApp(model: LibraryModel, player: MediaController?) {
                                         FilterChip(favorites, { favorites = true }, label = { Text("喜欢 ${songs.count { it.favorite }}") }, leadingIcon = { Icon(Icons.Rounded.Favorite, null, Modifier.size(15.dp)) })
                                     } else Text("${visible.size} 首歌曲", Modifier.weight(1f))
                                     Spacer(Modifier.weight(1f))
-                                    IconButton(onClick = { visible.firstOrNull()?.let { playQueue(player, visible.shuffled(), it); player?.shuffleModeEnabled = true; full = true } }, enabled = visible.isNotEmpty() && player != null) { Icon(Icons.Rounded.Shuffle, "随机播放列表") }
+                                    SoftIconButton(onClick = { visible.firstOrNull()?.let { playQueue(player, visible.shuffled(), it); player?.shuffleModeEnabled = true; full = true } }, enabled = visible.isNotEmpty() && player != null) { Icon(Icons.Rounded.Shuffle, "随机播放列表") }
                                 }
                                 if (visible.isEmpty()) EmptyLibrary(if (songs.isEmpty()) "音乐，从这里开始" else "这里还没有音乐", if (songs.isEmpty()) "点右上角 ＋，导入音频或提取视频音轨。" else "试试其他搜索词，或向歌单添加歌曲。", Modifier.weight(1f))
                                 else LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
@@ -151,7 +151,7 @@ fun GlassBeatApp(model: LibraryModel, player: MediaController?) {
                             GlassPanel(Modifier.fillMaxWidth().padding(vertical = 12.dp)) {
                                 Row(Modifier.fillMaxWidth().padding(6.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
                                     listOf(Icons.Rounded.LibraryMusic to "音乐库", Icons.Rounded.QueueMusic to "歌单", Icons.Rounded.Palette to "外观").forEachIndexed { i, (icon, label) ->
-                                        TextButton(onClick = { tab = i; query = ""; playlistId = null }, colors = ButtonDefaults.textButtonColors(contentColor = if (tab == i) accent else colors.onSurfaceVariant)) {
+                                        SoftTextButton(onClick = { tab = i; query = ""; playlistId = null }, colors = ButtonDefaults.textButtonColors(contentColor = if (tab == i) accent else colors.onSurfaceVariant)) {
                                             Icon(icon, null, Modifier.size(20.dp)); Spacer(Modifier.width(6.dp)); Text(label)
                                         }
                                     }
@@ -162,7 +162,7 @@ fun GlassBeatApp(model: LibraryModel, player: MediaController?) {
                     task?.let { current ->
                         GlassPanel(Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(horizontal = 20.dp, vertical = 100.dp).fillMaxWidth()) {
                             Column(Modifier.padding(18.dp)) {
-                                Row(verticalAlignment = Alignment.CenterVertically) { Text(current.label, Modifier.weight(1f)); TextButton(onClick = model::cancelImport) { Text("取消") } }
+                                Row(verticalAlignment = Alignment.CenterVertically) { Text(current.label, Modifier.weight(1f)); SoftTextButton(onClick = model::cancelImport) { Text("取消") } }
                                 if (current.progress in 0f..1f) LinearProgressIndicator(progress = { current.progress }, modifier = Modifier.fillMaxWidth()) else LinearProgressIndicator(Modifier.fillMaxWidth())
                                 Text("切换页面不会中断导入", style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 8.dp))
                             }
@@ -174,49 +174,49 @@ fun GlassBeatApp(model: LibraryModel, player: MediaController?) {
             if (importDialog) ImportDialog(model, task != null, { importDialog = false }, { importDialog = false; audioPicker.launch(arrayOf("audio/*")) }, { importDialog = false; videoPicker.launch(arrayOf("video/*")) })
             model.preview?.let { preview ->
                 var allowed by remember(preview) { mutableStateOf(false) }
-                AlertDialog(onDismissRequest = { if (task == null) model.preview = null }, title = { Text("发现新的音轨") }, text = {
+                GlassDialog(onDismissRequest = { if (task == null) model.preview = null }, title = { Text("发现新的音轨") }, text = {
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Text(preview.title, style = MaterialTheme.typography.titleMedium)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Artwork("", Modifier.size(58.dp))
+                            Text(preview.title, Modifier.weight(1f).padding(start = 12.dp), style = MaterialTheme.typography.titleMedium, maxLines = 3, overflow = TextOverflow.Ellipsis)
+                        }
                         Text("来源：抖音视频 · ${if (preview.durationMs > 0) formatTime(preview.durationMs) else "时长将在导入后识别"}")
                         Text(if (task == null) "保存视频的完整音轨到本地音乐库。" else task!!.label)
                         Row(verticalAlignment = Alignment.CenterVertically) { Checkbox(allowed, { allowed = it }); Text("我有权保存这段内容", style = MaterialTheme.typography.bodySmall) }
                     }
-                }, confirmButton = { TextButton(onClick = model::savePreview, enabled = allowed && task == null) { Text("保存到音乐库") } }, dismissButton = { TextButton(onClick = { model.preview = null }, enabled = task == null) { Text("取消") } })
+                }, confirmButton = { SoftTextButton(onClick = model::savePreview, enabled = allowed && task == null) { Text("保存到音乐库") } }, dismissButton = { SoftTextButton(onClick = { model.preview = null }, enabled = task == null) { Text("取消") } })
             }
             songMenu?.let { song ->
-                AlertDialog(onDismissRequest = { songMenu = null }, title = { Text(song.title, maxLines = 2) }, text = {
-                    Column {
-                        ActionRow(if (song.favorite) "取消喜欢" else "添加到喜欢", Icons.Rounded.Favorite) { model.favorite(song); songMenu = null }
-                        ActionRow("添加到歌单", Icons.Rounded.PlaylistAdd) { addingToPlaylist = song; songMenu = null }
-                        if (tab == 1 && selectedPlaylist != null) ActionRow("从当前歌单移除", Icons.Rounded.PlaylistRemove) { model.setMembership(song, selectedPlaylist, false); songMenu = null }
-                        ActionRow("重命名", Icons.Rounded.Edit) { renaming = song; songMenu = null }
-                        ActionRow("编辑封面", Icons.Rounded.Image) { coverTarget = song; coverPicker.launch(arrayOf("image/*")); songMenu = null }
-                        ActionRow("导出音乐文件", Icons.Rounded.SaveAlt) { exportTarget = song.id; exporter.launch(exportName(song)); songMenu = null }
-                        ActionRow("删除音乐", Icons.Rounded.Delete) { deleting = song; songMenu = null }
-                    }
-                }, confirmButton = { TextButton(onClick = { songMenu = null }) { Text("关闭") } })
+                SongMenuSheet(song, { songMenu = null },
+                    favorite = { model.favorite(song); songMenu = null },
+                    playlist = { addingToPlaylist = song; songMenu = null },
+                    removeFromPlaylist = if (tab == 1 && selectedPlaylist != null) ({ model.setMembership(song, selectedPlaylist, false); songMenu = null }) else null,
+                    rename = { renaming = song; songMenu = null },
+                    cover = { coverTarget = song; coverPicker.launch(arrayOf("image/*")); songMenu = null },
+                    export = { exportTarget = song.id; exporter.launch(exportName(song)); songMenu = null },
+                    delete = { deleting = song; songMenu = null })
             }
             renaming?.let { song -> TextEntryDialog("重命名歌曲", song.title, { renaming = null }) { name ->
                 model.rename(song, name)
                 if (player != null) for (i in 0 until player.mediaItemCount) if (player.getMediaItemAt(i).mediaId == song.id) player.replaceMediaItem(i, song.copy(title = name).mediaItem())
                 renaming = null
             } }
-            deleting?.let { song -> ConfirmDialog("删除音乐？", "将删除“${song.title}”在 GlassBeat 中的副本及歌单记录。原始文件不受影响。", { deleting = null }) {
+            deleting?.let { song -> ConfirmDialog("删除音乐？", "将删除“${song.title}”在 FavSoda 中的副本及歌单记录。原始文件不受影响。", { deleting = null }) {
                 if (player != null) for (i in player.mediaItemCount - 1 downTo 0) if (player.getMediaItemAt(i).mediaId == song.id) player.removeMediaItem(i)
                 model.delete(song); deleting = null
             } }
             if (playlistDialog) TextEntryDialog("新建歌单", "", { playlistDialog = false }) { model.createPlaylist(it); playlistDialog = false }
             editingPlaylist?.let { list -> TextEntryDialog("重命名歌单", list.name, { editingPlaylist = null }) { model.renamePlaylist(list, it); editingPlaylist = null } }
             deletingPlaylist?.let { list -> ConfirmDialog("删除歌单？", "仅删除歌单“${list.name}”，音乐仍保留在音乐库。", { deletingPlaylist = null }) { model.deletePlaylist(list); playlistId = null; deletingPlaylist = null } }
-            addingToPlaylist?.let { song -> AlertDialog(onDismissRequest = { addingToPlaylist = null }, title = { Text("添加到歌单") }, text = {
-                if (playlists.isEmpty()) Text("先到“歌单”页面创建一个歌单。") else Column(Modifier.verticalScroll(rememberScrollState())) {
+            addingToPlaylist?.let { song -> GlassDialog(onDismissRequest = { addingToPlaylist = null }, title = { Text("添加到歌单") }, text = {
+                if (playlists.isEmpty()) Text("先到“歌单”页面创建一个歌单。") else Column {
                     playlists.forEach { list -> val checked = memberships.any { it.playlistId == list.id && it.songId == song.id }
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) { Checkbox(checked, { model.setMembership(song, list, it) }); Text(list.name) }
                     }
                 }
-            }, confirmButton = { TextButton(onClick = { addingToPlaylist = null }) { Text("完成") } }) }
-            model.message?.let { text -> AlertDialog(onDismissRequest = { model.message = null }, title = { Text("GlassBeat") }, text = { Text(text) }, confirmButton = { TextButton(onClick = { model.message = null }) { Text("知道了") } }, dismissButton = {
-                if (text.contains("抖音") || text.contains("媒体资源")) TextButton(onClick = { model.message = null; videoPicker.launch(arrayOf("video/*")) }) { Text("本地视频提取") }
+            }, confirmButton = { SoftTextButton(onClick = { addingToPlaylist = null }) { Text("完成") } }) }
+            model.message?.let { text -> GlassDialog(onDismissRequest = { model.message = null }, title = { Text("FavSoda") }, text = { Text(text) }, confirmButton = { SoftTextButton(onClick = { model.message = null }) { Text("知道了") } }, dismissButton = {
+                if (text.contains("抖音") || text.contains("媒体资源")) SoftTextButton(onClick = { model.message = null; videoPicker.launch(arrayOf("video/*")) }) { Text("本地视频提取") }
             }) }
         }
     }
@@ -236,25 +236,22 @@ fun GlassBeatApp(model: LibraryModel, player: MediaController?) {
     }
 }
 @Composable private fun SongRow(song: Song, current: Boolean, onPlay: () -> Unit, onMenu: () -> Unit) {
-    Row(Modifier.fillMaxWidth().clickable(onClick = onPlay).padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxWidth().softClickable(onClick = onPlay).padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
         Artwork(song.cover, Modifier.size(54.dp))
         Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
             Text(song.title, maxLines = 1, overflow = TextOverflow.Ellipsis, color = if (current) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Medium)
             Text("${song.artist} · ${formatTime(song.durationMs)}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
         }
         if (song.favorite) Icon(Icons.Rounded.Favorite, "已喜欢", Modifier.size(15.dp), tint = MaterialTheme.colorScheme.primary)
-        IconButton(onClick = onMenu) { Icon(Icons.Rounded.MoreHoriz, "${song.title} 的菜单") }
+        SoftIconButton(onClick = onMenu) { Icon(Icons.Rounded.MoreHoriz, "${song.title} 的菜单") }
     }
-}
-@Composable private fun ActionRow(label: String, icon: androidx.compose.ui.graphics.vector.ImageVector, action: () -> Unit) {
-    TextButton(onClick = action, modifier = Modifier.fillMaxWidth(), contentPadding = PaddingValues(12.dp)) { Icon(icon, null, Modifier.size(20.dp)); Spacer(Modifier.width(12.dp)); Text(label, Modifier.weight(1f)) }
 }
 @Composable fun TextEntryDialog(title: String, initial: String, dismiss: () -> Unit, confirm: (String) -> Unit) {
     var value by remember(initial) { mutableStateOf(initial) }
-    AlertDialog(onDismissRequest = dismiss, title = { Text(title) }, text = { OutlinedTextField(value, { value = it.take(200) }, singleLine = true, label = { Text("名称") }) }, confirmButton = { TextButton(onClick = { confirm(value.trim()) }, enabled = value.isNotBlank()) { Text("保存") } }, dismissButton = { TextButton(onClick = dismiss) { Text("取消") } })
+    GlassDialog(onDismissRequest = dismiss, title = { Text(title) }, text = { OutlinedTextField(value, { value = it.take(200) }, modifier = Modifier.fillMaxWidth(), singleLine = true, shape = RoundedCornerShape(16.dp), label = { Text("名称") }) }, confirmButton = { SoftTextButton(onClick = { confirm(value.trim()) }, enabled = value.isNotBlank()) { Text("保存") } }, dismissButton = { SoftTextButton(onClick = dismiss) { Text("取消") } })
 }
 @Composable private fun ConfirmDialog(title: String, detail: String, dismiss: () -> Unit, confirm: () -> Unit) {
-    AlertDialog(onDismissRequest = dismiss, title = { Text(title) }, text = { Text(detail) }, confirmButton = { TextButton(onClick = confirm) { Text("确认删除") } }, dismissButton = { TextButton(onClick = dismiss) { Text("取消") } })
+    GlassDialog(onDismissRequest = dismiss, title = { Text(title) }, text = { Text(detail) }, confirmButton = { SoftTextButton(onClick = confirm) { Text("确认删除") } }, dismissButton = { SoftTextButton(onClick = dismiss) { Text("取消") } })
 }
 private fun exportName(song: Song): String {
     val ext = when { song.mime.contains("flac") -> "flac"; song.mime.contains("wav") -> "wav"; song.mime.contains("ogg") -> "ogg"; song.mime.contains("mp4") -> "m4a"; song.mime.contains("aac") -> "aac"; else -> "mp3" }

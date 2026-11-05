@@ -28,12 +28,12 @@ fun ColumnScope.PlayerScreen(state: PlaybackUi, song: Song?, player: MediaContro
         val artSize = (maxHeight * .43f).coerceIn(140.dp, 340.dp)
         Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Row(Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 18.dp), verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = back) { Icon(Icons.Rounded.KeyboardArrowDown, "收起播放器") }
+                SoftIconButton(onClick = back) { Icon(Icons.Rounded.KeyboardArrowDown, "收起播放器") }
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text("正在播放", style = MaterialTheme.typography.labelLarge)
                     Text(song?.source ?: "本地音乐", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
-                IconButton(onClick = { queue = true }) { Icon(Icons.Rounded.QueueMusic, "播放队列") }
+                SoftIconButton(onClick = { queue = true }) { Icon(Icons.Rounded.QueueMusic, "播放队列") }
             }
             Artwork(song?.cover ?: state.cover, Modifier.size(artSize).graphicsLayer { scaleX = scale; scaleY = scale })
             Spacer(Modifier.height(24.dp))
@@ -42,7 +42,7 @@ fun ColumnScope.PlayerScreen(state: PlaybackUi, song: Song?, player: MediaContro
                     Text(song?.title ?: state.title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis)
                     Text(song?.artist ?: state.artist, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 6.dp), maxLines = 1)
                 }
-                IconButton(onClick = { song?.let(favorite) }, enabled = song != null) { Icon(if (song?.favorite == true) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder, "切换喜欢", tint = MaterialTheme.colorScheme.primary) }
+                SoftIconButton(onClick = { song?.let(favorite) }, enabled = song != null) { Icon(if (song?.favorite == true) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder, "切换喜欢", tint = MaterialTheme.colorScheme.primary) }
             }
             Spacer(Modifier.height(18.dp))
             GlassPanel(Modifier.fillMaxWidth()) {
@@ -54,41 +54,34 @@ fun ColumnScope.PlayerScreen(state: PlaybackUi, song: Song?, player: MediaContro
                         onSeek = { player?.seekTo(it) }
                     )
                     Row(Modifier.fillMaxWidth().padding(top = 16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = { player?.shuffleModeEnabled = !state.shuffle }) { Icon(Icons.Rounded.Shuffle, if (state.shuffle) "关闭随机播放" else "开启随机播放", tint = if (state.shuffle) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant) }
-                        IconButton(onClick = { player?.seekToPrevious() }) { Icon(Icons.Rounded.SkipPrevious, "上一首", Modifier.size(32.dp)) }
-                        FilledIconButton(onClick = { togglePlayback(player) }, modifier = Modifier.size(68.dp)) {
+                        SoftIconButton(onClick = { player?.shuffleModeEnabled = !state.shuffle }) { Icon(Icons.Rounded.Shuffle, if (state.shuffle) "关闭随机播放" else "开启随机播放", tint = if (state.shuffle) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant) }
+                        SoftIconButton(onClick = { player?.seekToPrevious() }) { Icon(Icons.Rounded.SkipPrevious, "上一首", Modifier.size(32.dp)) }
+                        SoftFilledIconButton(onClick = { togglePlayback(player) }, modifier = Modifier.size(68.dp)) {
                             if (state.buffering) CircularProgressIndicator(Modifier.size(24.dp), strokeWidth = 2.dp, color = MaterialTheme.colorScheme.onPrimary)
                             else Icon(if (state.playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow, if (state.playing) "暂停" else "播放", Modifier.size(34.dp))
                         }
-                        IconButton(onClick = { player?.seekToNextMediaItem() }) { Icon(Icons.Rounded.SkipNext, "下一首", Modifier.size(32.dp)) }
-                        IconButton(onClick = { player?.repeatMode = if (state.repeat) Player.REPEAT_MODE_OFF else Player.REPEAT_MODE_ONE }) { Icon(Icons.Rounded.RepeatOne, if (state.repeat) "关闭单曲循环" else "开启单曲循环", tint = if (state.repeat) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant) }
+                        SoftIconButton(onClick = { player?.seekToNextMediaItem() }) { Icon(Icons.Rounded.SkipNext, "下一首", Modifier.size(32.dp)) }
+                        SoftIconButton(onClick = { player?.repeatMode = if (state.repeat) Player.REPEAT_MODE_OFF else Player.REPEAT_MODE_ONE }) { Icon(Icons.Rounded.RepeatOne, if (state.repeat) "关闭单曲循环" else "开启单曲循环", tint = if (state.repeat) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant) }
                     }
                 }
             }
             Text("音乐属于此刻", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(top = 22.dp))
         }
     }
-    if (queue) AlertDialog(onDismissRequest = { queue = false }, title = { Text("播放队列") }, text = {
-        Column(Modifier.heightIn(max = 360.dp).verticalScroll(rememberScrollState())) {
-            if (player != null) for (i in 0 until player.mediaItemCount) {
-                val item = player.getMediaItemAt(i)
-                TextButton(onClick = { player.seekToDefaultPosition(i); player.play(); queue = false }, modifier = Modifier.fillMaxWidth()) { Text(item.mediaMetadata.title?.toString() ?: "未命名歌曲", maxLines = 1, overflow = TextOverflow.Ellipsis) }
-            }
-        }
-    }, confirmButton = { TextButton(onClick = { queue = false }) { Text("关闭") } })
+    if (queue) QueueSheet(player) { queue = false }
 }
 
 @Composable
 fun MiniPlayer(state: PlaybackUi, player: MediaController?, open: () -> Unit) {
     GlassPanel(Modifier.fillMaxWidth()) {
-        Row(Modifier.fillMaxWidth().clickable(onClick = open).padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxWidth().softClickable(onClick = open).padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
             Artwork(state.cover, Modifier.size(46.dp))
             Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
                 Text(state.title, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.titleSmall)
                 Text(state.artist, maxLines = 1, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-            IconButton(onClick = { togglePlayback(player) }) { Icon(if (state.playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow, "播放或暂停") }
-            IconButton(onClick = { player?.seekToNextMediaItem() }) { Icon(Icons.Rounded.SkipNext, "下一首") }
+            SoftIconButton(onClick = { togglePlayback(player) }) { Icon(if (state.playing) Icons.Rounded.Pause else Icons.Rounded.PlayArrow, "播放或暂停") }
+            SoftIconButton(onClick = { player?.seekToNextMediaItem() }) { Icon(Icons.Rounded.SkipNext, "下一首") }
         }
         LinearProgressIndicator(progress = { if (state.duration > 0) state.position.toFloat() / state.duration else 0f }, modifier = Modifier.fillMaxWidth().height(2.dp))
     }

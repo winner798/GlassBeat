@@ -10,6 +10,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -31,11 +33,15 @@ fun GlassPanel(modifier: Modifier = Modifier, content: @Composable ColumnScope.(
     val haze = if (!t.lowPower && t.blur > 0) Modifier.hazeEffect(LocalGlass.current,
         HazeStyle(backgroundColor = MaterialTheme.colorScheme.background,
             tints = listOf(HazeTint(surface.copy(alpha = t.opacity))), blurRadius = t.blur.dp,
-            noiseFactor = .015f, fallbackTint = HazeTint(surface.copy(alpha = .88f))))
-        else Modifier.background(surface.copy(alpha = t.opacity.coerceAtLeast(.65f)))
-    Column(modifier.clip(shape).then(haze)
-        .background(Brush.linearGradient(listOf(Color.White.copy(alpha = if (t.light) .35f else .10f), Color.Transparent, Color.White.copy(alpha = .03f))))
-        .border(1.dp, Brush.linearGradient(listOf(Color.White.copy(alpha = .35f), Color.White.copy(alpha = .04f), Color.White.copy(alpha = .14f))), shape), content = content)
+            noiseFactor = .008f, fallbackTint = HazeTint(surface.copy(alpha = (.20f + t.opacity * .65f).coerceIn(.30f, .86f)))))
+        else Modifier.background(surface.copy(alpha = t.opacity.coerceIn(.15f, .95f)))
+    Column(modifier.then(if (!t.lowPower) Modifier.shadow(12.dp, shape, clip = false, ambientColor = Color.Black.copy(alpha = .12f), spotColor = Color.Black.copy(alpha = .16f)) else Modifier).clip(shape).then(haze)
+        .background(Brush.linearGradient(listOf(Color.White.copy(alpha = if (t.light) .28f else .12f), Color.Transparent, Color.White.copy(alpha = .03f))))
+        .drawWithCache {
+            val reflection = Brush.radialGradient(listOf(Color.White.copy(alpha = if (t.light) .14f else .07f), Color.Transparent), center = Offset(size.width * .12f, 0f), radius = size.width.coerceAtLeast(1f) * .8f)
+            onDrawBehind { drawRect(reflection) }
+        }
+        .border(1.dp, Brush.linearGradient(listOf(Color.White.copy(alpha = .48f), Color.White.copy(alpha = .10f), Color.White.copy(alpha = .025f), Color.White.copy(alpha = .22f))), shape), content = content)
 }
 
 @Composable

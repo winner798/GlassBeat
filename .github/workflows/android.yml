@@ -70,7 +70,7 @@ jobs:
             adb logcat -d -s AndroidRuntime TestRunner > app/build/outputs/device-tests/logcat.txt
             mkdir -p app/build/outputs/screenshots
             adb pull /sdcard/Android/data/io.github.glassbeat/files/screenshots app/build/outputs/screenshots/ || true
-            python3 -c "import re; s=open('app/build/outputs/device-tests/instrumentation.txt').read(); m=re.search(r'OK \((\d+) tests?\)',s); assert m and int(m[1]) >= 10, 'Device tests did not pass'"
+            python3 -c "import re; s=open('app/build/outputs/device-tests/instrumentation.txt').read(); m=re.search(r'OK \((\d+) tests?\)',s); assert m and int(m[1]) >= 15, 'Device tests did not pass'"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
