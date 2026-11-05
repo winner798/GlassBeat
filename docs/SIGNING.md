@@ -20,3 +20,5 @@
 在 GitHub Releases 发布正式版本（不能是 draft 或 prerelease），标签采用 `v1.0.1` 这样的三段数字版本。发布一个通用 APK，文件名如 `GlassBeat-v1.0.1.apk`；同时提高应用的 versionName 和 versionCode。签名必须与旧安装一致。GitHub 提供的资产 SHA-256 摘要会被校验，最终仍以本机包名、递增版本号及签名核对为准。
 
 应用不会请求 token 或账号，也不检测源码分支提交；只有 Releases 中实际发布的 APK 才能用于安装更新。用户需要首次在系统中允许 GlassBeat 安装应用，并在每次更新时确认。
+
+更新检查按 latest API、release list、`updates/stable.json` 依次回退。正式版发布后 `Refresh update manifest` 工作流自动刷新清单，清单优先提供仓库发行分支的 Raw APK，再提供官方资产 API 和浏览器地址。上传流程需保留对应 `release-artifacts/v版本/dist/GlassBeat-v版本.apk` 文件。所有备用下载仍受本机签名、版本与摘要校验约束。

@@ -1,0 +1,12 @@
+{
+  "packageName": "io.github.glassbeat",
+  "version": "1.0.2",
+  "size": 2664110,
+  "sha256": "47e50b3d4b31c8ac1f613a208ec509453c318cc26fec59eb8d9e2f9023ca8542",
+  "notes": "修复：抖音链接已解析出预览，但点击“保存到音乐库”时提示“不支持的媒体地址”。\n\n同一视频会返回不同地区的 CDN 地址。此版移除固定的媒体域名名单，改为验证每一次连接与跳转的目标；分享页面仍限定抖音官方域名。保留 HTTPS、重定向次数、下载大小限制，以及本机/局域网地址检查。\n\n已通过 18 项 JVM 回归测试，包括跨不同 CDN 下载、未知地区 CDN、内网跳转拒绝与常用 VPN 合成地址兼容。已使用生产解析器和下载器重测发起人提供的链接，成功下载约 72.7 MB 的完整视频（358956 ms）。正式构建与 Lint 通过，Android 10 / Android 15 各 8 项设备回归全部通过。\n\n覆盖安装保留音乐库和设置，签名与 1.0.1 相同。可在“外观”底部点击“检查更新”，或手动下载安装 APK。无需卸载旧版。\n\nCI：https://github.com/winner798/GlassBeat/actions/runs/41974040576\n",
+  "downloadUrls": [
+    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.2/dist/GlassBeat-v1.0.2.apk",
+    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/712203375",
+    "https://github.com/winner798/GlassBeat/releases/download/v1.0.2/GlassBeat-v1.0.2.apk"
+  ]
+}

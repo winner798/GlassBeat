@@ -32,12 +32,14 @@ class AppUpdater(private val context: Context, private val scope: CoroutineScope
             mutable.value = UpdateState.Checking
             try {
                 val release = withContext(Dispatchers.IO) {
-                    val connection = GitHubReleaseNetwork.open("https://api.github.com/repos/winner798/GlassBeat/releases/latest", true)
-                    try {
-                        val output = ByteArrayOutputStream()
-                        connection.inputStream.use { copyCancellable(it, output, 2L * 1024 * 1024) }
-                        ReleaseInfo.fromJson(output.toString("UTF-8"))
-                    } finally { connection.disconnect() }
+                    ReleaseFeed { url ->
+                        val connection = GitHubReleaseNetwork.open(url, true)
+                        try {
+                            val output = ByteArrayOutputStream()
+                            connection.inputStream.use { copyCancellable(it, output, 2L * 1024 * 1024) }
+                            output.toString("UTF-8")
+                        } finally { connection.disconnect() }
+                    }.latest(installedVersion)
                 }
                 val installed = ReleaseVersion.parse(installedVersion.substringBefore('-')) ?: error("无法识别当前应用版本")
                 mutable.value = if (ReleaseVersion.parse(release.version)!! > installed) UpdateState.Available(release)
@@ -55,15 +57,7 @@ class AppUpdater(private val context: Context, private val scope: CoroutineScope
             mutable.value = UpdateState.Downloading(release, 0f)
             try {
                 withContext(Dispatchers.IO) {
-                    require(ReleaseInfo.validAssetUrl(release.url)) { "更新来源无效" }
-                    val connection = GitHubReleaseNetwork.open(release.url, false)
-                    try {
-                        connection.inputStream.use { input -> partial.outputStream().use { output ->
-                            copyCancellable(input, output, 100L * 1024 * 1024) { copied -> mutable.value = UpdateState.Downloading(release, (copied.toFloat() / release.size).coerceIn(0f, 1f)) }
-                        } }
-                    } finally { connection.disconnect() }
-                    require(partial.length() == release.size) { "更新文件下载不完整，请重试" }
-                    release.sha256?.let { digest -> require(sha256(partial).equals(digest, true)) { "更新文件校验失败，请重试" } }
+                    ReleaseDownloader().download(release, partial) { mutable.value = UpdateState.Downloading(release, it) }
                     verifyPackage(partial)
                     if (target.exists()) target.delete()
                     require(partial.renameTo(target)) { "无法保存更新文件" }
@@ -95,10 +89,5 @@ class AppUpdater(private val context: Context, private val scope: CoroutineScope
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.updates", file)
         return Intent(Intent.ACTION_VIEW).setDataAndType(uri, "application/vnd.android.package-archive")
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION).also { it.clipData = android.content.ClipData.newRawUri("GlassBeat update", uri) }
-    }
-    private fun sha256(file: File): String {
-        val digest = MessageDigest.getInstance("SHA-256")
-        file.inputStream().use { input -> val buffer = ByteArray(65536); while (true) { val n = input.read(buffer); if (n < 0) break; digest.update(buffer, 0, n) } }
-        return digest.digest().joinToString("") { "%02x".format(it) }
     }
 }

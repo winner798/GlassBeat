@@ -1,0 +1,27 @@
+name: Refresh update manifest
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Generate official repository fallback feed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/update_manifest.py
+      - name: Save feed
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add updates/stable.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'chore: refresh stable update feed [skip ci]'
+            git push origin main
+          fi

@@ -13,7 +13,7 @@ data class ReleaseVersion(val major: Int, val minor: Int, val patch: Int) : Comp
         }
     }
 }
-data class ReleaseInfo(val version: String, val notes: String, val url: String, val size: Long, val sha256: String?) {
+data class ReleaseInfo(val version: String, val notes: String, val url: String, val size: Long, val sha256: String?, val downloadUrls: List<String> = listOf(url)) {
     companion object {
         const val RELEASES = "https://github.com/winner798/GlassBeat/releases"
         fun fromJson(text: String): ReleaseInfo {
@@ -31,13 +31,16 @@ data class ReleaseInfo(val version: String, val notes: String, val url: String, 
             val url = asset.optString("url").takeIf { it.isNotBlank() } ?: asset.getString("browser_download_url")
             require(validAssetUrl(url)) { "更新文件不是来自 GlassBeat 发布仓库" }
             val digest = asset.optString("digest").removePrefix("sha256:").takeIf { it.matches(Regex("[0-9a-fA-F]{64}")) }
-            return ReleaseInfo(version.removePrefix("v"), root.optString("body").take(12000), url, asset.getLong("size"), digest)
+            val raw = "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/$version/dist/${asset.getString("name")}"
+            val alternatives = listOf(url, asset.optString("browser_download_url"), raw).filter { validAssetUrl(it) }.distinct()
+            return ReleaseInfo(version.removePrefix("v"), root.optString("body").take(12000), url, asset.getLong("size"), digest, alternatives)
         }
         fun validAssetUrl(url: String): Boolean = runCatching {
             val uri = URI(url)
             uri.scheme == "https" && uri.userInfo == null && (uri.port == -1 || uri.port == 443) && (
                 (uri.host == "github.com" && uri.normalize().path.startsWith("/winner798/GlassBeat/releases/download/") && uri.path.endsWith(".apk", true)) ||
-                (uri.host == "api.github.com" && uri.path.matches(Regex("/repos/winner798/GlassBeat/releases/assets/\\d+"))))
+                (uri.host == "api.github.com" && uri.path.matches(Regex("/repos/winner798/GlassBeat/releases/assets/\\d+"))) ||
+                (uri.host == "raw.githubusercontent.com" && uri.path.matches(Regex("/winner798/GlassBeat/release-artifacts/v[0-9]+\\.[0-9]+\\.[0-9]+/dist/GlassBeat-v[0-9]+\\.[0-9]+\\.[0-9]+\\.apk"))))
         }.getOrDefault(false)
     }
 }
