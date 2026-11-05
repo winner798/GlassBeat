@@ -67,7 +67,8 @@ fun ThemeScreen(theme: ThemeSettings, model: LibraryModel) {
         }
         GlassPanel {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("GlassBeat 1.0", style = MaterialTheme.typography.titleMedium)
+                Text("GlassBeat ${model.updater.installedVersion}", style = MaterialTheme.typography.titleMedium)
+                Button(onClick = model.updater::check, modifier = Modifier.fillMaxWidth()) { Text("检查更新") }
                 Text("无账号 · 无广告 · 无自建服务器", style = MaterialTheme.typography.bodyMedium)
                 Text("本地音乐始终保存在设备。只有解析分享链接和下载媒体时才联网，不上传音乐库。卸载会清除应用内音乐，请先导出重要文件。", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 TextButton(onClick = { uriHandler.openUri("https://github.com/winner798/GlassBeat") }) { Text("源码、隐私说明与开源许可 ↗") }

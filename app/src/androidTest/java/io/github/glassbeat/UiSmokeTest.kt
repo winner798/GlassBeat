@@ -40,6 +40,8 @@ class UiSmokeTest {
         compose.onNodeWithText("外观").performClick()
         compose.onNodeWithText("外观工作室").assertIsDisplayed()
         screenshot("themes")
+        compose.onNodeWithText("检查更新").performScrollTo().assertIsDisplayed()
+        compose.onNodeWithText("浅色玻璃").performScrollTo()
         compose.onNodeWithText("浅色玻璃").performClick()
         compose.onNodeWithText("歌单", useUnmergedTree = true).performClick()
         compose.onNodeWithText("＋ 新建歌单").performClick()

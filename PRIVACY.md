@@ -19,12 +19,17 @@ GlassBeat 不提供账号、广告、分析 SDK 或自建云端服务。
 
 应用不执行网页脚本、不绕过登录、验证码、DRM 或付费限制，不使用第三方解析服务。资源不可访问时会提供明确说明及本地视频备用路径。
 
-系统分享音视频文件仅在本地处理。除分享解析和用户打开源码网页外，音乐库、播放及外观功能均可离线使用。
+系统分享音视频文件仅在本地处理。除分享解析、用户发起的应用更新和用户打开源码网页外，音乐库、播放及外观功能均可离线使用。
+
+## 应用内更新
+
+仅当用户点击“检查更新”时，应用访问 GitHub 的公开 Releases API；确认下载后从同一仓库的官方发布资产下载 APK 到应用私有缓存。GitHub/CDN 会收到 IP、User-Agent 和请求 URL，不包含音乐库与主题数据。APK 会校验包名、递增版本号、与当前安装相同的签名，并在 GitHub 提供摘要时校验 SHA-256。由用户在 Android 系统页面授权并确认安装，不静默安装。
 
 ## 权限
 
-- INTERNET：用户触发的链接解析及下载。
+- INTERNET：用户触发的链接解析、媒体下载、GitHub 更新检查及 APK 下载。
 - FOREGROUND_SERVICE / FOREGROUND_SERVICE_MEDIA_PLAYBACK：后台播放与系统媒体通知。
 - WAKE_LOCK：播放所需的设备唤醒能力。
+- REQUEST_INSTALL_PACKAGES：仅用于用户主动选择的应用内更新，仍需系统授权和确认安装。
 
 问题反馈：[GitHub Issues](https://github.com/winner798/GlassBeat/issues)。请勿在公开反馈中附带私密音频或含凭据的 URL。

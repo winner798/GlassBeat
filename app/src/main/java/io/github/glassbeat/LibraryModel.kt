@@ -20,6 +20,7 @@ import java.util.UUID
 
 data class ImportTask(val label: String, val progress: Float = -1f)
 class LibraryModel(app: Application) : AndroidViewModel(app) {
+    val updater = io.github.glassbeat.update.AppUpdater(app, viewModelScope)
     val repository = LibraryRepository(app)
     private val themes = ThemeStore(app)
     val songs = repository.dao.songs().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())

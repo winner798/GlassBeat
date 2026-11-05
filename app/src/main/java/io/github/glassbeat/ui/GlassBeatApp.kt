@@ -170,6 +170,7 @@ fun GlassBeatApp(model: LibraryModel, player: MediaController?) {
                     }
                 }
             }
+            AppUpdateDialog(model)
             if (importDialog) ImportDialog(model, task != null, { importDialog = false }, { importDialog = false; audioPicker.launch(arrayOf("audio/*")) }, { importDialog = false; videoPicker.launch(arrayOf("video/*")) })
             model.preview?.let { preview ->
                 var allowed by remember(preview) { mutableStateOf(false) }
