@@ -4,11 +4,28 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
 }
+val releaseStore = providers.environmentVariable("GLASSBEAT_KEYSTORE").orNull
 android {
     namespace = "io.github.glassbeat"
     compileSdk = 35
     defaultConfig { applicationId = "io.github.glassbeat"; minSdk = 26; targetSdk = 35; versionCode = 10; versionName = "1.0.0-rc1" }
     defaultConfig { testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" }
+    signingConfigs {
+        if (releaseStore != null) create("distribution") {
+            storeFile = file(releaseStore)
+            storePassword = providers.environmentVariable("GLASSBEAT_STORE_PASSWORD").orNull
+            keyAlias = providers.environmentVariable("GLASSBEAT_KEY_ALIAS").orNull
+            keyPassword = providers.environmentVariable("GLASSBEAT_KEY_PASSWORD").orNull
+        }
+    }
+    buildTypes {
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            if (releaseStore != null) signingConfig = signingConfigs.getByName("distribution")
+        }
+    }
     buildFeatures { compose = true }
     compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
     kotlinOptions { jvmTarget = "17" }

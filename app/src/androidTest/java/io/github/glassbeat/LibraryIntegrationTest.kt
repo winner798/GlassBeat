@@ -10,6 +10,7 @@ import io.github.glassbeat.importer.AudioExtractor
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.*
+import org.junit.Assert.*
 import org.junit.runner.RunWith
 import java.io.File
 
