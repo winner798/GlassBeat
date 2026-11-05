@@ -24,3 +24,5 @@ FavSoda 源码以 Apache-2.0 发布，未复制 ShuYin、Seal 或 Chocola 的源
 抖音公开 slidesinfo 兼容路径参考 [wujunwei928/parse-video-py](https://github.com/wujunwei928/parse-video-py)，MIT 声明保留于根目录 THIRD_PARTY_NOTICES，并随 APK 的 assets 分发。没有引入 Python 运行时或远程解析服务。
 
 1.0.5 立体玻璃与导航的源码研究及兼容性说明见 [GLASS.md](GLASS.md)。AndroidLiquidGlass 为设计/算法思路参考，未作为打包依赖，也未复制其源码。
+
+FavSoda Bubble 字标字体派生自 [Fredoka](https://github.com/google/fonts/tree/main/ofl/fredoka)，SIL OFL-1.1。已实例化为静态 Bold 字重、重命名并保留 Basic Latin 子集；字体及完整许可证随源码和 APK 分发。只用于品牌字标。

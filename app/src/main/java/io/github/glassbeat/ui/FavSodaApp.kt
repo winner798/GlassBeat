@@ -99,7 +99,8 @@ fun FavSodaApp(model: LibraryModel, player: MediaController?) {
                         } else {
                             Row(Modifier.padding(top = 22.dp, bottom = 18.dp), verticalAlignment = Alignment.CenterVertically) {
                                 Column(Modifier.weight(1f)) {
-                                    Text(if (tab == 0) "FavSoda" else if (tab == 1) selectedPlaylist?.name ?: "你的歌单" else "外观工作室", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
+                                    if (tab == 0) BrandWordmark()
+                                    else Text(if (tab == 1) selectedPlaylist?.name ?: "你的歌单" else "外观工作室", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
                                     Text(if (tab == 2) "让音乐拥有你的样子" else "离线收藏 · 自由聆听", color = colors.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
                                 }
                                 if (selectedPlaylist != null && tab == 1) SoftIconButton(onClick = { playlistId = null }) { Icon(Icons.Rounded.ArrowBack, "返回歌单") }
