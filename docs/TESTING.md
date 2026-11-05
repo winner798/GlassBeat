@@ -112,3 +112,12 @@
 - Android 10 / Android 15 各 20 项设备测试通过：[CI](https://github.com/winner798/GlassBeat/actions/runs/42022000463)。
 - 浅色底板的圆形和圆角方形预览已实际渲染并检查；前景安全区与主题单色图标检查通过。
 - APK 1.0.8 / versionCode 18，保留 1.0.7 的导航与同签名覆盖升级兼容性。
+
+
+## 1.0.9 底部材质与气泡字标验证
+
+- 26 项 JVM 测试、Debug/Release 静态检查及签名构建通过。
+- Android 10 / Android 15 各 20 项设备测试通过：[CI](https://github.com/winner798/GlassBeat/actions/runs/42024859723)。
+- 原有主界面检查继续验证品牌标题唯一可见、导航选择及取消、字体资源实际加载和完整播放交互。
+- 已核对两套设备的字标与底部导航截图，实际音乐库截图已更新到 README。
+- APK 1.0.9 / versionCode 19，继续支持原包名、原签名的覆盖升级。
