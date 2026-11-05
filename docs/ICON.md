@@ -1,6 +1,6 @@
 # FavSoda 图标
 
-1.0.7 图标以玻璃音符融合字母 f 的形态，配一颗气泡。前景用图像生成工具制作，按 Android 资源规格导出 512px 透明 PNG；深色渐变背景与主题单色版本使用矢量资源。
+1.0.7 图标以玻璃音符融合字母 f 的形态，配一颗气泡。前景用图像生成工具制作，按 Android 资源规格导出 512px 透明 PNG；背景与主题单色版本使用矢量资源。1.0.8 将背景调整为珍珠白到淡蓝的浅色渐变（`#FAFCFF` → `#EDF3FC` → `#DCE7F7`）。
 
 - [彩色前景](../app/src/main/res/drawable-nodpi/ic_launcher_art.png)
 - [渐变背景](../app/src/main/res/drawable/ic_launcher_background.xml)
