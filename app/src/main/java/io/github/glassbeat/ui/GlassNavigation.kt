@@ -45,9 +45,8 @@ internal fun GlassNavigation(selected: Int, onSelected: (Int) -> Unit, modifier:
                 val travel = abs(target - position.value).coerceAtMost(1f)
                 scaleX = 1f + press.value * .05f + if (motion) travel * .035f else 0f
                 scaleY = 1f + press.value * .05f - if (motion) travel * .015f else 0f
-            }.clip(selectedShape).background(Brush.verticalGradient(listOf(MaterialTheme.colorScheme.primary.copy(alpha = .13f),
-                MaterialTheme.colorScheme.primary.copy(alpha = .065f))))
-                .border(.7.dp, MaterialTheme.colorScheme.primary.copy(alpha = .14f), selectedShape))
+            }.controlSkin(selectedShape).background(Brush.verticalGradient(listOf(MaterialTheme.colorScheme.primary.copy(alpha = .10f),
+                MaterialTheme.colorScheme.primary.copy(alpha = .055f))), selectedShape))
             Row(Modifier.fillMaxSize().selectableGroup()) {
                 val items = listOf(Icons.Rounded.LibraryMusic to "音乐库", Icons.AutoMirrored.Rounded.QueueMusic to "歌单", Icons.Rounded.Palette to "外观")
                 items.forEachIndexed { index, (icon, label) ->

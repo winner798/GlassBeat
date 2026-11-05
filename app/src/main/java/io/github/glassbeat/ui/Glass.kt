@@ -36,17 +36,17 @@ fun GlassPanel(modifier: Modifier = Modifier, subtle: Boolean = false, content: 
             tints = listOf(HazeTint(surface.copy(alpha = tintAlpha))), blurRadius = t.blur.dp,
             noiseFactor = .006f, fallbackTint = HazeTint(surface.copy(alpha = (.16f + t.opacity * .56f).coerceIn(.24f, .78f)))))
         else Modifier.background(surface.copy(alpha = tintAlpha))
-    Box(modifier.then(if (!t.lowPower) Modifier.shadow(if (subtle) 8.dp else 24.dp, shape, clip = false,
-        ambientColor = Color.Black.copy(alpha = if (subtle) .10f else .26f), spotColor = Color.Black.copy(alpha = if (subtle) .16f else .38f)) else Modifier).clip(shape)) {
+    Box(modifier.then(if (!t.lowPower) Modifier.shadow(if (subtle) 10.dp else 24.dp, shape, clip = false,
+        ambientColor = Color.Black.copy(alpha = if (subtle) .12f else .26f), spotColor = Color.Black.copy(alpha = if (subtle) .18f else .38f)) else Modifier).clip(shape)) {
         // This layer contains only the backdrop, so refraction cannot warp text or icons.
         Box(Modifier.matchParentSize().glassLens(!subtle && !t.lowPower && t.blur > 0).then(haze)
-            .background(Brush.linearGradient(listOf(Color.White.copy(alpha = if (subtle) .055f else if (t.light) .30f else .16f), Color.Transparent, Color.White.copy(alpha = if (subtle) .015f else .055f)))))
+            .background(Brush.linearGradient(listOf(Color.White.copy(alpha = if (subtle) .08f else if (t.light) .30f else .16f), Color.Transparent, Color.White.copy(alpha = if (subtle) .025f else .055f)))))
         Column(Modifier.fillMaxWidth().drawWithCache {
             val radius = minOf(28.dp.toPx(), size.minDimension * .5f)
-            val reflection = Brush.radialGradient(listOf(Color.White.copy(alpha = if (subtle) .025f else if (t.light) .19f else .10f), Color.Transparent),
+            val reflection = Brush.radialGradient(listOf(Color.White.copy(alpha = if (subtle) .045f else if (t.light) .19f else .10f), Color.Transparent),
                 center = Offset(size.width * .08f, 0f), radius = size.width.coerceAtLeast(1f) * .85f)
-            val edge = Brush.linearGradient(listOf(Color.White.copy(alpha = if (subtle) .22f else .80f), Color.White.copy(alpha = if (subtle) .04f else .18f),
-                Color.White.copy(alpha = .025f), Color.White.copy(alpha = if (subtle) .10f else .48f)))
+            val edge = Brush.linearGradient(listOf(Color.White.copy(alpha = if (subtle) .34f else .80f), Color.White.copy(alpha = if (subtle) .06f else .18f),
+                Color.White.copy(alpha = .025f), Color.White.copy(alpha = if (subtle) .16f else .48f)))
             val bevel = Brush.verticalGradient(listOf(Color.White.copy(alpha = .22f), Color.Transparent, Color.Black.copy(alpha = if (t.light) .09f else .28f)))
             onDrawWithContent {
                 drawRect(reflection)

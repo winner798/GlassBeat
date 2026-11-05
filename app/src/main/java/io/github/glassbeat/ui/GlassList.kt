@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 
 /** Lightweight separation for scrolling rows: no per-row backdrop capture or shader. */
@@ -38,8 +39,7 @@ internal fun GlassListCard(modifier: Modifier = Modifier, selected: Boolean = fa
 }
 
 @Composable
-internal fun Modifier.controlSkin(): Modifier {
-    val shape = RoundedCornerShape(16.dp)
+internal fun Modifier.controlSkin(shape: Shape = RoundedCornerShape(16.dp)): Modifier {
     return clip(shape).background(Brush.verticalGradient(listOf(Color.White.copy(alpha = .09f), MaterialTheme.colorScheme.onSurface.copy(alpha = .035f))))
         .border(1.dp, Brush.linearGradient(listOf(Color.White.copy(alpha = .34f), MaterialTheme.colorScheme.onSurface.copy(alpha = .06f), MaterialTheme.colorScheme.onSurface.copy(alpha = .16f))), shape)
 }
