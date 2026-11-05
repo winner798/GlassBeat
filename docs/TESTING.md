@@ -2,6 +2,8 @@
 
 ## 自动检查
 
+- JVM：更新版本号数值比较、正式资产来源限制、草稿/预发布拒绝与摘要读取。
+- Android：拒绝同版本和错误包名的更新 APK，验证更新 FileProvider 不暴露音乐目录。
 - JVM：分享文案链接提取、域名边界、API JSON、路由 JSON、URL 编码的 RENDER_DATA、不可访问与畸形页面。
 - Android：Room 收藏、重命名与外键级联；0.1.0 JSON 迁移可重入且不覆盖已有编辑。
 - Android：Media3 对真实 MP4 提取音轨，输出具有音频且不含视频，并验证时长。

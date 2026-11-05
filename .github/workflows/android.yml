@@ -7,6 +7,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   build:
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,6 +29,7 @@ jobs:
             app/build/outputs/apk/androidTest/debug/*.apk
             app/build/reports/
   device-tests:
+    timeout-minutes: 15
     needs: build
     runs-on: ubuntu-latest
     strategy:
@@ -56,15 +58,17 @@ jobs:
           profile: pixel_5
           target: google_apis
           disable-animations: true
+          emulator-boot-timeout: 180
           script: |
             adb install -r ci-artifacts/outputs/apk/debug/app-debug.apk
             adb install -r ci-artifacts/outputs/apk/androidTest/debug/app-debug-androidTest.apk
             mkdir -p app/build/outputs/device-tests
-            adb shell am instrument -w -r io.github.glassbeat.test/androidx.test.runner.AndroidJUnitRunner > app/build/outputs/device-tests/instrumentation.txt
+            timeout 300s adb shell am instrument -w -r io.github.glassbeat.test/androidx.test.runner.AndroidJUnitRunner > app/build/outputs/device-tests/instrumentation.txt || true
             cat app/build/outputs/device-tests/instrumentation.txt
-            python3 -c "import re; s=open('app/build/outputs/device-tests/instrumentation.txt').read(); m=re.search(r'OK \((\d+) tests?\)',s); assert m and int(m[1]) >= 8, 'Device tests did not pass'"
+            adb logcat -d -s AndroidRuntime TestRunner > app/build/outputs/device-tests/logcat.txt
             mkdir -p app/build/outputs/screenshots
-            adb pull /sdcard/Android/data/io.github.glassbeat/files/screenshots app/build/outputs/screenshots/
+            adb pull /sdcard/Android/data/io.github.glassbeat/files/screenshots app/build/outputs/screenshots/ || true
+            python3 -c "import re; s=open('app/build/outputs/device-tests/instrumentation.txt').read(); m=re.search(r'OK \((\d+) tests?\)',s); assert m and int(m[1]) >= 8, 'Device tests did not pass'"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

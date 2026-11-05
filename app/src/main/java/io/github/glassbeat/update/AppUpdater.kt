@@ -23,7 +23,7 @@ class AppUpdater(private val context: Context, private val scope: CoroutineScope
     private var job: Job? = null
     @Suppress("DEPRECATION")
     private fun packageInfo(): PackageInfo = context.packageManager.getPackageInfo(context.packageName, signingFlags())
-    val installedVersion: String get() = packageInfo().versionName.orEmpty()
+    val installedVersion: String by lazy { packageInfo().versionName.orEmpty() }
     fun dismiss() { if (mutable.value !is UpdateState.Downloading && mutable.value != UpdateState.Checking) mutable.value = UpdateState.Idle }
     fun cancel() { job?.cancel() }
     fun check() {
