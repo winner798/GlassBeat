@@ -115,15 +115,15 @@ fun FavSodaApp(model: LibraryModel, player: MediaController?) {
                                 if (playlists.isEmpty()) EmptyLibrary("把喜欢的歌放在一起", "新建歌单后，在歌曲菜单中添加音乐。", Modifier.weight(1f))
                                 else LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
                                     items(playlists, key = { it.id }) { list ->
-                                        GlassPanel {
+                                        GlassListCard {
                                             Row(Modifier.fillMaxWidth().softClickable { playlistId = list.id; query = "" }.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
                                                 Icon(Icons.Rounded.QueueMusic, null, Modifier.size(32.dp), tint = accent)
-                                                Column(Modifier.weight(1f).padding(start = 14.dp)) { Text(list.name, style = MaterialTheme.typography.titleMedium); Text("${memberships.count { it.playlistId == list.id }} 首", style = MaterialTheme.typography.bodySmall) }
+                                                Column(Modifier.weight(1f).padding(start = 14.dp)) { Text(list.name, style = MaterialTheme.typography.titleMedium, maxLines = 2, overflow = TextOverflow.Ellipsis); Text("${memberships.count { it.playlistId == list.id }} 首", style = MaterialTheme.typography.bodySmall) }
                                                 var menu by remember { mutableStateOf(false) }
                                                 Box { SoftIconButton(onClick = { menu = true }) { Icon(Icons.Rounded.MoreVert, "歌单菜单") }
                                                     DropdownMenu(menu, { menu = false }) {
-                                                        DropdownMenuItem(text = { Text("重命名") }, onClick = { menu = false; editingPlaylist = list })
-                                                        DropdownMenuItem(text = { Text("删除歌单") }, onClick = { menu = false; deletingPlaylist = list })
+                                                        DropdownMenuItem(modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp).listCard(), leadingIcon = { Icon(Icons.Rounded.Edit, null) }, text = { Text("重命名") }, onClick = { menu = false; editingPlaylist = list })
+                                                        DropdownMenuItem(modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp).listCard(), leadingIcon = { Icon(Icons.Rounded.DeleteOutline, null, tint = MaterialTheme.colorScheme.error) }, text = { Text("删除歌单", color = MaterialTheme.colorScheme.error) }, onClick = { menu = false; deletingPlaylist = list })
                                                     }
                                                 }
                                             }
@@ -134,14 +134,14 @@ fun FavSodaApp(model: LibraryModel, player: MediaController?) {
                                 OutlinedTextField(query, { query = it }, Modifier.fillMaxWidth(), placeholder = { Text("搜索歌曲、艺术家") }, leadingIcon = { Icon(Icons.Rounded.Search, null) }, singleLine = true, shape = RoundedCornerShape(24.dp))
                                 Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
                                     if (tab == 0) {
-                                        FilterChip(!favorites, { favorites = false }, label = { Text("全部 ${songs.size}") })
-                                        FilterChip(favorites, { favorites = true }, label = { Text("喜欢 ${songs.count { it.favorite }}") }, leadingIcon = { Icon(Icons.Rounded.Favorite, null, Modifier.size(15.dp)) })
+                                        SoftFilterChip(!favorites, { favorites = false }, label = { Text("全部 ${songs.size}") })
+                                        SoftFilterChip(favorites, { favorites = true }, label = { Text("喜欢 ${songs.count { it.favorite }}") }, leadingIcon = { Icon(Icons.Rounded.Favorite, null, Modifier.size(15.dp)) })
                                     } else Text("${visible.size} 首歌曲", Modifier.weight(1f))
                                     Spacer(Modifier.weight(1f))
                                     SoftIconButton(onClick = { visible.firstOrNull()?.let { playQueue(player, visible.shuffled(), it); player?.shuffleModeEnabled = true; full = true } }, enabled = visible.isNotEmpty() && player != null) { Icon(Icons.Rounded.Shuffle, "随机播放列表") }
                                 }
                                 if (visible.isEmpty()) EmptyLibrary(if (songs.isEmpty()) "音乐，从这里开始" else "这里还没有音乐", if (songs.isEmpty()) "点右上角 ＋，导入音频或提取视频音轨。" else "试试其他搜索词，或向歌单添加歌曲。", Modifier.weight(1f))
-                                else LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
+                                else LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(10.dp), contentPadding = PaddingValues(top = 4.dp, bottom = 16.dp)) {
                                     items(visible, key = { it.id }) { song ->
                                         SongRow(song, song.id == playback.id, { if (player != null) { playQueue(player, visible, song); full = true } }, { songMenu = song })
                                     }
@@ -203,7 +203,9 @@ fun FavSodaApp(model: LibraryModel, player: MediaController?) {
             addingToPlaylist?.let { song -> GlassDialog(onDismissRequest = { addingToPlaylist = null }, title = { Text("添加到歌单") }, text = {
                 if (playlists.isEmpty()) Text("先到“歌单”页面创建一个歌单。") else Column {
                     playlists.forEach { list -> val checked = memberships.any { it.playlistId == list.id && it.songId == song.id }
-                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) { Checkbox(checked, { model.setMembership(song, list, it) }); Text(list.name) }
+                        GlassListCard(Modifier.fillMaxWidth().padding(vertical = 4.dp), selected = checked) {
+                            Row(Modifier.fillMaxWidth().softClickable { model.setMembership(song, list, !checked) }.padding(8.dp), verticalAlignment = Alignment.CenterVertically) { Checkbox(checked, { model.setMembership(song, list, it) }); Text(list.name, maxLines = 2, overflow = TextOverflow.Ellipsis) }
+                        }
                     }
                 }
             }, confirmButton = { SoftTextButton(onClick = { addingToPlaylist = null }) { Text("完成") } }) }
@@ -227,15 +229,22 @@ fun FavSodaApp(model: LibraryModel, player: MediaController?) {
         else Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Icon(Icons.Rounded.MusicNote, null, Modifier.fillMaxSize(.45f), tint = MaterialTheme.colorScheme.primary) }
     }
 }
-@Composable private fun SongRow(song: Song, current: Boolean, onPlay: () -> Unit, onMenu: () -> Unit) {
-    Row(Modifier.fillMaxWidth().softClickable(onClick = onPlay).padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-        Artwork(song.cover, Modifier.size(54.dp))
-        Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
-            Text(song.title, maxLines = 1, overflow = TextOverflow.Ellipsis, color = if (current) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface, fontWeight = FontWeight.Medium)
-            Text("${song.artist} · ${formatTime(song.durationMs)}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
+@Composable internal fun SongRow(song: Song, current: Boolean, onPlay: () -> Unit, onMenu: () -> Unit) {
+    GlassListCard(Modifier.fillMaxWidth(), selected = current) {
+        Row(Modifier.fillMaxWidth().softClickable(onClick = onPlay).padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box {
+                Artwork(song.cover, Modifier.size(54.dp))
+                if (current) Box(Modifier.align(Alignment.BottomEnd).size(19.dp).background(MaterialTheme.colorScheme.primary, RoundedCornerShape(6.dp)), contentAlignment = Alignment.Center) {
+                    Icon(Icons.Rounded.GraphicEq, "当前播放", Modifier.size(13.dp), tint = MaterialTheme.colorScheme.onPrimary)
+                }
+            }
+            Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
+                Text(song.title, maxLines = 1, overflow = TextOverflow.Ellipsis, color = if (current) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface, fontWeight = if (current) FontWeight.Bold else FontWeight.Medium)
+                Text("${song.artist} · ${formatTime(song.durationMs)}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(top = 5.dp))
+            }
+            if (song.favorite) Icon(Icons.Rounded.Favorite, "已喜欢", Modifier.size(15.dp), tint = MaterialTheme.colorScheme.primary)
+            SoftIconButton(onClick = onMenu) { Icon(Icons.Rounded.MoreHoriz, "${song.title} 的菜单") }
         }
-        if (song.favorite) Icon(Icons.Rounded.Favorite, "已喜欢", Modifier.size(15.dp), tint = MaterialTheme.colorScheme.primary)
-        SoftIconButton(onClick = onMenu) { Icon(Icons.Rounded.MoreHoriz, "${song.title} 的菜单") }
     }
 }
 @Composable fun TextEntryDialog(title: String, initial: String, dismiss: () -> Unit, confirm: (String) -> Unit) {

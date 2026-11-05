@@ -48,7 +48,7 @@ internal fun QueueSheet(player: Player?, dismiss: () -> Unit) {
                 Text("队列还是空的", Modifier.padding(top = 16.dp), style = MaterialTheme.typography.titleMedium)
                 Text("从音乐库选择一首喜欢的音乐", Modifier.padding(top = 6.dp), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-        } else LazyColumn(state = list, modifier = Modifier.fillMaxWidth().heightIn(max = maxHeight), contentPadding = PaddingValues(horizontal = 14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        } else LazyColumn(state = list, modifier = Modifier.fillMaxWidth().heightIn(max = maxHeight), contentPadding = PaddingValues(horizontal = 14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             itemsIndexed(queue.items, key = { index, item -> "$index:${item.mediaId}" }) { index, item ->
                 val current = index == queue.current
                 val title = item.mediaMetadata.title?.toString()?.takeIf { it.isNotBlank() } ?: "未命名歌曲"
@@ -56,8 +56,7 @@ internal fun QueueSheet(player: Player?, dismiss: () -> Unit) {
                 val duration = item.mediaMetadata.extras?.getLong("durationMs") ?: 0L
                 val shape = RoundedCornerShape(20.dp)
                 val primary = MaterialTheme.colorScheme.primary
-                Row(Modifier.fillMaxWidth().clip(shape).background(if (current) primary.copy(alpha = .12f) else MaterialTheme.colorScheme.onSurface.copy(alpha = .025f))
-                    .then(if (current) Modifier.border(1.dp, primary.copy(alpha = .25f), shape) else Modifier)
+                Row(Modifier.fillMaxWidth().listCard(current)
                     .softClickable { player?.seekToDefaultPosition(index); player?.play() }.padding(start = 12.dp, top = 12.dp, bottom = 12.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                     Box {
                         Artwork(item.mediaMetadata.artworkUri?.toString().orEmpty(), Modifier.size(52.dp))

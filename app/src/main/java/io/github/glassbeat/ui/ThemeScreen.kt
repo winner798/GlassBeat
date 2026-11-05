@@ -27,8 +27,8 @@ fun ThemeScreen(theme: ThemeSettings, model: LibraryModel) {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text("玻璃预设", style = MaterialTheme.typography.titleMedium)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FilterChip(!theme.light && theme.background.isEmpty(), { model.updateTheme { current -> current.copy(light = false, background = "") } }, label = { Text("深色玻璃") })
-                    FilterChip(theme.light && theme.background.isEmpty(), { model.updateTheme { current -> current.copy(light = true, background = "") } }, label = { Text("浅色玻璃") })
+                    SoftFilterChip(!theme.light && theme.background.isEmpty(), { model.updateTheme { current -> current.copy(light = false, background = "") } }, label = { Text("深色玻璃") })
+                    SoftFilterChip(theme.light && theme.background.isEmpty(), { model.updateTheme { current -> current.copy(light = true, background = "") } }, label = { Text("浅色玻璃") })
                 }
                 SoftOutlinedButton(onClick = { image.launch(arrayOf("image/*")) }, modifier = Modifier.fillMaxWidth()) { Text(if (theme.background.isBlank()) "＋ 自定义背景图片" else "更换背景图片") }
                 if (theme.background.isNotBlank()) {
