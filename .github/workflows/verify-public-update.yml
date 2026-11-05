@@ -1,0 +1,25 @@
+name: Verify anonymous app update
+on:
+  workflow_dispatch:
+permissions: {}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check public metadata and download without credentials
+        run: |
+          python3 - <<'PY'
+          import urllib.request, json, hashlib
+          def get(url):
+              req = urllib.request.Request(url, headers={'User-Agent': 'GlassBeat-public-update-check'})
+              return urllib.request.urlopen(req, timeout=60).read()
+          repo = json.loads(get('https://api.github.com/repos/winner798/GlassBeat'))
+          assert repo['private'] is False
+          latest = json.loads(get('https://api.github.com/repos/winner798/GlassBeat/releases/latest'))
+          manifest = json.loads(get('https://raw.githubusercontent.com/winner798/GlassBeat/main/updates/stable.json'))
+          assert latest['tag_name'] == 'v' + manifest['version']
+          apk = get(manifest['downloadUrls'][0])
+          assert len(apk) == manifest['size']
+          assert hashlib.sha256(apk).hexdigest() == manifest['sha256']
+          print('Anonymous update verified:', manifest['version'], len(apk), 'bytes, SHA-256 matched')
+          PY
