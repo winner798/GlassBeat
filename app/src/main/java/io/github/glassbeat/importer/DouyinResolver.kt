@@ -1,5 +1,6 @@
 package io.github.glassbeat.importer
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -50,7 +51,8 @@ object DouyinPageParser {
     private fun findVideo(node: Any?, depth: Int): JSONObject? {
         if (depth > 24) return null
         if (node is JSONObject) {
-            if (node.optJSONObject("video") != null) return node
+            val video = node.optJSONObject("video")
+            if (video != null && (video.has("play_addr") || video.has("playAddr") || video.has("playApi"))) return node
             node.keys().forEach { key -> findVideo(node.opt(key), depth + 1)?.let { return it } }
         } else if (node is JSONArray) {
             for (i in 0 until node.length()) findVideo(node.opt(i), depth + 1)?.let { return it }
@@ -78,7 +80,7 @@ class DouyinResolver(private val network: MediaNetwork = MediaNetwork()) {
         if (id != null) {
             val alternatives = listOf("https://www.iesdouyin.com/share/video/$id/", "https://www.douyin.com/aweme/v1/web/aweme/detail/?aweme_id=$id")
             for (url in alternatives) {
-                val result = runCatching { network.page(url) }.getOrNull() ?: continue
+                val result = try { network.page(url) } catch (e: CancellationException) { throw e } catch (_: Exception) { continue }
                 DouyinPageParser.parse(result.body, page.url)?.let { return@withContext it }
             }
         }
