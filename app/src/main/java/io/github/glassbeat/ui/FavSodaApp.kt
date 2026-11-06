@@ -33,6 +33,7 @@ import java.io.File
 @Composable
 fun FavSodaApp(model: LibraryModel, player: MediaController?) {
     val songs by model.songs.collectAsStateWithLifecycle()
+    LaunchedEffect(songs, player) { syncQueueMetadata(player, songs) }
     val playlists by model.playlists.collectAsStateWithLifecycle()
     val memberships by model.memberships.collectAsStateWithLifecycle()
     val theme by model.theme.collectAsStateWithLifecycle()
@@ -191,7 +192,6 @@ fun FavSodaApp(model: LibraryModel, player: MediaController?) {
             }
             renaming?.let { song -> TextEntryDialog("重命名歌曲", song.title, { renaming = null }) { name ->
                 model.rename(song, name)
-                if (player != null) for (i in 0 until player.mediaItemCount) if (player.getMediaItemAt(i).mediaId == song.id) player.replaceMediaItem(i, song.copy(title = name).mediaItem())
                 renaming = null
             } }
             deleting?.let { song -> ConfirmDialog("删除音乐？", "将删除“${song.title}”在 FavSoda 中的副本及歌单记录。原始文件不受影响。", { deleting = null }) {

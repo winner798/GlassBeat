@@ -12,6 +12,8 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.github.glassbeat.ui.QueueSheet
 import io.github.glassbeat.ui.queueUi
+import io.github.glassbeat.ui.syncQueueMetadata
+import io.github.glassbeat.data.Song
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
@@ -43,6 +45,28 @@ class QueueOrderTest {
                 player.clearMediaItems()
                 assertTrue(player.queueUi().entries.isEmpty())
                 assertEquals(-1, player.queueUi().currentRow)
+            } finally { player.release() }
+        }
+    }
+    @Test fun editedMetadataPreservesQueueOrderAndPlaybackPosition() {
+        compose.runOnUiThread {
+            val player = ExoPlayer.Builder(context).build()
+            try {
+                player.setMediaItems(items(), 0, 12345)
+                player.setShuffleOrder(DefaultShuffleOrder(intArrayOf(2, 0, 1), 123L))
+                player.shuffleModeEnabled = true
+                player.playWhenReady = true
+                val before = player.queueUi().entries.map { it.item.mediaId }
+                val local = player.currentMediaItem!!.localConfiguration
+                syncQueueMetadata(player, listOf(Song("One", "Updated title", "/unused-One.mp3", "Updated artist", 45678, cover = "/new-cover.png")))
+                assertEquals("Updated title", player.currentMediaItem!!.mediaMetadata.title.toString())
+                assertEquals("Updated artist", player.currentMediaItem!!.mediaMetadata.artist.toString())
+                assertTrue(player.currentMediaItem!!.mediaMetadata.artworkUri.toString().endsWith("/new-cover.png"))
+                assertEquals(local, player.currentMediaItem!!.localConfiguration)
+                assertEquals(12345L, player.currentPosition)
+                assertTrue(player.playWhenReady)
+                assertEquals(before, player.queueUi().entries.map { it.item.mediaId })
+                assertEquals(listOf("One", "Two", "Three"), (0 until player.mediaItemCount).map { player.getMediaItemAt(it).mediaId })
             } finally { player.release() }
         }
     }
