@@ -7,7 +7,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.media3.exoplayer.ExoPlayer
@@ -39,8 +38,31 @@ class OverlayUiTest {
     }
     private fun screenshot(name: String) {
         compose.waitForIdle()
-        val title = when (name) { "queue-sheet" -> "播放队列"; "song-menu" -> "歌曲选项"; else -> "导入音乐" }
-        val bitmap = compose.onNode(isRoot() and hasAnyDescendant(hasText(title))).captureToImage().asAndroidBitmap()
+        // PixelCopy of a Compose dialog can select the activity window. Capture the
+        // compositor instead, and wait until the dark fixture contains rendered text.
+        compose.mainClock.advanceTimeBy(500)
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        instrumentation.waitForIdleSync()
+        var captured: Bitmap? = null
+        compose.waitUntil(5000) {
+            val raw = instrumentation.uiAutomation.takeScreenshot()
+            if (raw == null) false else {
+                val frame = raw.copy(Bitmap.Config.ARGB_8888, false)
+                raw.recycle()
+                val pixels = IntArray(frame.width * frame.height)
+                frame.getPixels(pixels, 0, frame.width, 0, 0, frame.width, frame.height)
+                var bright = 0
+                // Exclude status/navigation bars; the plain fixture has no bright text.
+                for (y in (frame.height * .15f).toInt() until (frame.height * .90f).toInt() step 3) {
+                    for (x in (frame.width * .05f).toInt() until (frame.width * .95f).toInt() step 3) {
+                        val color = pixels[y * frame.width + x]
+                        if ((color shr 16 and 255) > 160 && (color shr 8 and 255) > 160 && (color and 255) > 160) bright++
+                    }
+                }
+                if (bright > 60) { captured = frame; true } else { frame.recycle(); false }
+            }
+        }
+        val bitmap = checkNotNull(captured)
         val directory = File(context.getExternalFilesDir(null), "screenshots").apply { mkdirs() }
         File(directory, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
     }
