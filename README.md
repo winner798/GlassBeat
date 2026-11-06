@@ -4,7 +4,7 @@
 
 开源、离线优先、可自定义的 Android 玻璃风格音乐播放器。
 
-1.0.9：左上角使用有渐变高光与柔和厚度的气泡字标；底部选中区域复用其他按钮的玻璃底座，适度加强高光与浅阴影。[图标资源](docs/ICON.md) · [玻璃实现](docs/GLASS.md)。
+1.0.10：随机队列按真实播放顺序显示，编辑封面和标题后同步更新队列媒体信息。[队列实现与验证](docs/QUEUE.md)。气泡字标、统一玻璃按钮及浅色图标已集成。
 
 <p>
   <img src="docs/screenshots/icon-rounded-square.png" width="80" alt="圆角方形图标预览" />
@@ -20,8 +20,9 @@
   <img src="docs/screenshots/separated-list.png" width="230" alt="列表层次示例（测试素材）" />
 </p>
 <details>
-<summary>二级界面布局（1.0.4）</summary>
+<summary>当前二级界面</summary>
 <p>
+  <img src="docs/screenshots/queue-sheet.png" width="230" alt="玻璃播放队列" />
   <img src="docs/screenshots/import-sheet.png" width="230" alt="玻璃导入面板" />
   <img src="docs/screenshots/song-menu.png" width="230" alt="分组歌曲操作" />
 </p>
