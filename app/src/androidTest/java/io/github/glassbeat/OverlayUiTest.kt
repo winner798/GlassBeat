@@ -39,7 +39,8 @@ class OverlayUiTest {
     }
     private fun screenshot(name: String) {
         compose.waitForIdle()
-        val bitmap = compose.onAllNodes(isRoot()).onLast().captureToImage().asAndroidBitmap()
+        val title = when (name) { "queue-sheet" -> "播放队列"; "song-menu" -> "歌曲选项"; else -> "导入音乐" }
+        val bitmap = compose.onNode(isRoot() and hasAnyDescendant(hasText(title))).captureToImage().asAndroidBitmap()
         val directory = File(context.getExternalFilesDir(null), "screenshots").apply { mkdirs() }
         File(directory, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
     }
