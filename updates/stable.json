@@ -1,12 +1,12 @@
 {
   "packageName": "io.github.glassbeat",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "size": 2819828,
-  "sha256": "25f7d7c89a2ab6ccc292837565dde31a2c9da8794e2b8fc2e84e0bb9931cbf88",
-  "notes": "本版重做玻璃边缘、精简播放控件，并提供按需下载字体。\n\n- 去掉玻璃面板内侧的粗白框，保留单层渐变细边和柔和反光；歌曲列表使用清透底色，按钮去除重复描边。\n- 全屏封面缩小（最高 248dp，随屏幕自适应），主播放键改为 64dp 圆形，辅助按钮去底框；进度条改为细轨道与圆形滑块，保留原有拖动和无障碍交互。\n- 外观 → 发现字体：可下载 Noto Sans SC、Noto Serif SC、马善政楷书、站酷快乐体。字体完整文件不打进 APK，仅下载所选字体与其开源许可证；下载后自动应用，可离线切换或删除。\n- 保留 TTF/OTF 导入及系统字体恢复。下载校验文件大小、SHA-256 与系统字体加载；失败保留当前字体，取消时清理临时文件。\n- 更新隐私说明与字体来源文档。\n\n验证：32 项 JVM 测试；Android 10 与 Android 15 各 26 项设备测试；Release Lint 与签名构建。下载、损坏、取消、离线复用及 Android 字体加载有专项验证。尚未进行全机型帧率测试。\n\n安装 FavSoda-v1.0.12.apk，或在「外观 → 检查更新」覆盖升级，保留本地音乐库。下载字体占用设备存储，可随时删除；GlassBeat 同名版本安装包为兼容旧更新器的相同副本。\n",
+  "sha256": "eaa2de6173e6cd8c22778338294335882e04a69af9638193406904fbf3d50692",
+  "notes": "本版重做玻璃边缘、精简播放控件，并提供按需下载字体。补充旧版 Android 的透明材质兼容修正。\n\n- 去掉玻璃面板内侧的粗白框，保留单层渐变细边和柔和反光；歌曲列表使用清透底色，按钮去除重复描边。\n- Android 11 及以下直接绘制单层半透明玻璃，不再调用实时模糊或硬件投影分支，避免兼容渲染出现矩形底色；保留面反射和边缘高光。\n- 全屏封面缩小（最高 248dp，随屏幕自适应），主播放键改为 64dp 圆形，辅助按钮去底框；进度条改为细轨道与圆形滑块，保留原有拖动和无障碍交互。\n- 外观 → 发现字体：可下载 Noto Sans SC、Noto Serif SC、马善政楷书、站酷快乐体。字体完整文件不打进 APK，仅下载所选字体与其开源许可证；下载后自动应用，可离线切换或删除。\n- 保留 TTF/OTF 导入及系统字体恢复。下载校验文件大小、SHA-256 与系统字体加载；失败保留当前字体，取消时清理临时文件。\n- 更新隐私说明与字体来源文档。\n\n验证：32 项 JVM 测试；Android 10 与 Android 15 各 26 项设备测试；Release Lint 与签名构建。下载、损坏、取消、离线复用及 Android 字体加载有专项验证。尚未进行全机型帧率测试。\n\n安装 FavSoda-v1.0.13.apk，或在「外观 → 检查更新」覆盖升级，保留本地音乐库。下载字体占用设备存储，可随时删除；GlassBeat 同名版本安装包为兼容旧更新器的相同副本。\n",
   "downloadUrls": [
-    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.12/dist/GlassBeat-v1.0.12.apk",
-    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/730121955",
-    "https://github.com/winner798/GlassBeat/releases/download/v1.0.12/GlassBeat-v1.0.12.apk"
+    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.13/dist/GlassBeat-v1.0.13.apk",
+    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/730148475",
+    "https://github.com/winner798/GlassBeat/releases/download/v1.0.13/GlassBeat-v1.0.13.apk"
   ]
 }
