@@ -1,5 +1,6 @@
 package io.github.glassbeat.ui
 
+import android.os.Build
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -30,13 +31,14 @@ fun GlassPanel(modifier: Modifier = Modifier, subtle: Boolean = false, content: 
     val t = LocalAppearance.current
     val shape = RoundedCornerShape(28.dp)
     val surface = MaterialTheme.colorScheme.surface
+    val nativeBlur = Build.VERSION.SDK_INT >= 31
     val tintAlpha = (t.opacity * if (subtle) .55f else .72f).coerceIn(.10f, .78f)
-    val haze = if (!t.lowPower && t.blur > 0) Modifier.hazeEffect(LocalGlass.current,
+    val haze = if (nativeBlur && !t.lowPower && t.blur > 0) Modifier.hazeEffect(LocalGlass.current,
         HazeStyle(backgroundColor = MaterialTheme.colorScheme.background,
             tints = listOf(HazeTint(surface.copy(alpha = tintAlpha))), blurRadius = t.blur.dp,
             noiseFactor = .006f, fallbackTint = HazeTint(surface.copy(alpha = (.16f + t.opacity * .56f).coerceIn(.24f, .78f)))))
         else Modifier.background(surface.copy(alpha = tintAlpha))
-    Box(modifier.then(if (!t.lowPower) Modifier.shadow(if (subtle) 10.dp else 24.dp, shape, clip = false,
+    Box(modifier.then(if (nativeBlur && !t.lowPower) Modifier.shadow(if (subtle) 10.dp else 24.dp, shape, clip = false,
         ambientColor = Color.Black.copy(alpha = if (subtle) .12f else .26f), spotColor = Color.Black.copy(alpha = if (subtle) .18f else .38f)) else Modifier).clip(shape)) {
         // This layer contains only the backdrop, so refraction cannot warp text or icons.
         Box(Modifier.matchParentSize().glassLens(!subtle && !t.lowPower && t.blur > 0).then(haze)
