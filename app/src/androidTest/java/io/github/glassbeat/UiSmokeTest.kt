@@ -3,7 +3,6 @@ package io.github.glassbeat
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.core.app.ApplicationProvider
@@ -30,8 +29,16 @@ class UiSmokeTest {
     @After fun clean() = runBlocking { repo.dao.delete("ui-test"); audio.delete(); Unit }
     private fun screenshot(name: String) {
         val directory = File(context.getExternalFilesDir(null), "screenshots").apply { mkdirs() }
-        val bitmap = compose.onRoot().captureToImage().asAndroidBitmap()
+        compose.waitForIdle()
+        compose.mainClock.advanceTimeBy(500)
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        instrumentation.waitForIdleSync()
+        // Capture the composed window, including the separate font sheet dialog.
+        val screenshot = checkNotNull(instrumentation.uiAutomation.takeScreenshot())
+        val bitmap = screenshot.copy(Bitmap.Config.ARGB_8888, false)
+        screenshot.recycle()
         File(directory, "$name.png").outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        bitmap.recycle()
     }
     @Test fun navigationThemeAndImportAreUsable() {
         compose.onNodeWithText("FavSoda").assertIsDisplayed()
