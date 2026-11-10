@@ -1,12 +1,12 @@
 {
   "packageName": "io.github.glassbeat",
-  "version": "1.0.11",
-  "size": 2803444,
-  "sha256": "dca327574468c13584ce7914af46c0e28b93e4d2e96cb893dae64e40962ef643",
-  "notes": "本版统一页面标题样式，增加视频封面导入，并减少播放期间的重复计算。\n\n- 「你的歌单」「外观工作室」采用配套中文展示字体，与 FavSoda 字标共用渐变、高光和立体投影。\n- 抖音分享导入优先保存视频封面到音乐库；封面不可用时尝试从已下载视频提取画面。本地视频也支持取帧封面，封面失败不阻断音频保存。\n- 限制封面下载大小、解码像素和最终尺寸；取消或导入失败时清理临时文件。\n- 缓存歌曲筛选结果，使用集合匹配歌单，减少暂停时的位置刷新，队列资料仅在实际变化时更新。\n- 补充中文字体授权与来源说明。\n\n验证：27 项 JVM 单元测试、Android 10 与 Android 15 各 25 项设备测试、Release Lint 及签名 APK 构建通过。测试覆盖视频提取后的封面持久化、异常回退与删除清理。尚未对所有机型进行帧率测试。\n\n安装 FavSoda-v1.0.11.apk 即可；已有用户可在「外观 → 检查更新」覆盖安装，保留音乐库。封面保存在应用音乐库中，导出音频不会额外写入封面标签。旧版本 updater 所需的 GlassBeat 文件名保留为同一安装包的兼容副本。\n",
+  "version": "1.0.12",
+  "size": 2819828,
+  "sha256": "25f7d7c89a2ab6ccc292837565dde31a2c9da8794e2b8fc2e84e0bb9931cbf88",
+  "notes": "本版重做玻璃边缘、精简播放控件，并提供按需下载字体。\n\n- 去掉玻璃面板内侧的粗白框，保留单层渐变细边和柔和反光；歌曲列表使用清透底色，按钮去除重复描边。\n- 全屏封面缩小（最高 248dp，随屏幕自适应），主播放键改为 64dp 圆形，辅助按钮去底框；进度条改为细轨道与圆形滑块，保留原有拖动和无障碍交互。\n- 外观 → 发现字体：可下载 Noto Sans SC、Noto Serif SC、马善政楷书、站酷快乐体。字体完整文件不打进 APK，仅下载所选字体与其开源许可证；下载后自动应用，可离线切换或删除。\n- 保留 TTF/OTF 导入及系统字体恢复。下载校验文件大小、SHA-256 与系统字体加载；失败保留当前字体，取消时清理临时文件。\n- 更新隐私说明与字体来源文档。\n\n验证：32 项 JVM 测试；Android 10 与 Android 15 各 26 项设备测试；Release Lint 与签名构建。下载、损坏、取消、离线复用及 Android 字体加载有专项验证。尚未进行全机型帧率测试。\n\n安装 FavSoda-v1.0.12.apk，或在「外观 → 检查更新」覆盖升级，保留本地音乐库。下载字体占用设备存储，可随时删除；GlassBeat 同名版本安装包为兼容旧更新器的相同副本。\n",
   "downloadUrls": [
-    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.11/dist/GlassBeat-v1.0.11.apk",
-    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/730070634",
-    "https://github.com/winner798/GlassBeat/releases/download/v1.0.11/GlassBeat-v1.0.11.apk"
+    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.12/dist/GlassBeat-v1.0.12.apk",
+    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/730121955",
+    "https://github.com/winner798/GlassBeat/releases/download/v1.0.12/GlassBeat-v1.0.12.apk"
   ]
 }
