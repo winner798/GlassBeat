@@ -47,15 +47,10 @@ fun GlassPanel(modifier: Modifier = Modifier, subtle: Boolean = false, content: 
                 center = Offset(size.width * .08f, 0f), radius = size.width.coerceAtLeast(1f) * .85f)
             val edge = Brush.linearGradient(listOf(Color.White.copy(alpha = if (subtle) .34f else .80f), Color.White.copy(alpha = if (subtle) .06f else .18f),
                 Color.White.copy(alpha = .025f), Color.White.copy(alpha = if (subtle) .16f else .48f)))
-            val bevel = Brush.verticalGradient(listOf(Color.White.copy(alpha = .22f), Color.Transparent, Color.Black.copy(alpha = if (t.light) .09f else .28f)))
             onDrawWithContent {
                 drawRect(reflection)
                 drawContent()
-                val inset = 3.dp.toPx().coerceAtMost(size.minDimension * .2f)
-                if (!subtle && !t.lowPower && size.minDimension > inset * 2) {
-                    drawRoundRect(bevel, topLeft = Offset(inset, inset), size = androidx.compose.ui.geometry.Size(size.width - inset * 2, size.height - inset * 2),
-                        cornerRadius = androidx.compose.ui.geometry.CornerRadius((radius - inset).coerceAtLeast(0f)), style = androidx.compose.ui.graphics.drawscope.Stroke(5.dp.toPx()))
-                }
+                // A single rim catches light; an inset stroke looks like a second white box.
                 drawRoundRect(edge, topLeft = Offset(.6.dp.toPx(), .6.dp.toPx()),
                     size = androidx.compose.ui.geometry.Size((size.width - 1.2.dp.toPx()).coerceAtLeast(0f), (size.height - 1.2.dp.toPx()).coerceAtLeast(0f)),
                     cornerRadius = androidx.compose.ui.geometry.CornerRadius(radius), style = androidx.compose.ui.graphics.drawscope.Stroke(1.2.dp.toPx()))

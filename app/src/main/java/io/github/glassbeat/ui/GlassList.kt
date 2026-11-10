@@ -21,16 +21,14 @@ internal fun Modifier.listCard(selected: Boolean = false): Modifier {
     val theme = LocalAppearance.current
     val primary = MaterialTheme.colorScheme.primary
     val shape = RoundedCornerShape(22.dp)
-    return then(if (!theme.lowPower) Modifier.shadow(if (selected) 7.dp else 3.dp, shape,
-        ambientColor = Color.Black.copy(alpha = .16f), spotColor = Color.Black.copy(alpha = .24f)) else Modifier)
-        .clip(shape)
+    return clip(shape)
         .background(Brush.verticalGradient(listOf(
-            if (selected) primary.copy(alpha = .20f) else MaterialTheme.colorScheme.onSurface.copy(alpha = if (theme.light) .06f else .075f),
-            if (selected) primary.copy(alpha = .08f) else MaterialTheme.colorScheme.surface.copy(alpha = .30f))))
-        .border(if (selected) 1.4.dp else 1.dp, Brush.linearGradient(listOf(
-            if (selected) primary.copy(alpha = .65f) else Color.White.copy(alpha = if (theme.light) .80f else .25f),
+            if (selected) primary.copy(alpha = .14f) else MaterialTheme.colorScheme.surface.copy(alpha = if (theme.light) .25f else .18f),
+            if (selected) primary.copy(alpha = .06f) else MaterialTheme.colorScheme.surface.copy(alpha = .08f))))
+        .border(1.dp, Brush.linearGradient(listOf(
+            if (selected) primary.copy(alpha = .50f) else Color.White.copy(alpha = if (theme.light) .68f else .30f),
             MaterialTheme.colorScheme.onSurface.copy(alpha = .045f),
-            if (selected) primary.copy(alpha = .24f) else MaterialTheme.colorScheme.onSurface.copy(alpha = .13f))), shape)
+            if (selected) primary.copy(alpha = .20f) else MaterialTheme.colorScheme.onSurface.copy(alpha = .10f))), shape)
 }
 
 @Composable
@@ -40,6 +38,6 @@ internal fun GlassListCard(modifier: Modifier = Modifier, selected: Boolean = fa
 
 @Composable
 internal fun Modifier.controlSkin(shape: Shape = RoundedCornerShape(16.dp)): Modifier {
-    return clip(shape).background(Brush.verticalGradient(listOf(Color.White.copy(alpha = .09f), MaterialTheme.colorScheme.onSurface.copy(alpha = .035f))))
-        .border(1.dp, Brush.linearGradient(listOf(Color.White.copy(alpha = .34f), MaterialTheme.colorScheme.onSurface.copy(alpha = .06f), MaterialTheme.colorScheme.onSurface.copy(alpha = .16f))), shape)
+    return clip(shape).background(Brush.linearGradient(listOf(Color.White.copy(alpha = .075f), Color.Transparent)))
+        .border(.8.dp, Brush.linearGradient(listOf(Color.White.copy(alpha = .28f), Color.Transparent, MaterialTheme.colorScheme.onSurface.copy(alpha = .10f))), shape)
 }

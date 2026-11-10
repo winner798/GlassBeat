@@ -7,11 +7,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 
 /** Keep per-frame reads and scrubbing local so artwork and glass controls stay untouched. */
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 internal fun PlaybackProgress(
     mediaId: String,
     duration: Long,
@@ -56,7 +60,9 @@ internal fun PlaybackProgress(
             },
             valueRange = 0f..end.toFloat().coerceAtLeast(1f),
             enabled = end > 0,
-            modifier = Modifier.fillMaxWidth().testTag("playback-progress")
+            modifier = Modifier.fillMaxWidth().testTag("playback-progress"),
+            thumb = { Box(Modifier.size(14.dp).background(MaterialTheme.colorScheme.primary, CircleShape)) },
+            track = { SliderDefaults.Track(it, Modifier.height(4.dp), thumbTrackGapSize = 0.dp, drawStopIndicator = null) }
         )
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(elapsedLabel, style = MaterialTheme.typography.labelSmall)

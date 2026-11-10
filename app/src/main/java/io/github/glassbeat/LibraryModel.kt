@@ -11,6 +11,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.glassbeat.data.*
 import io.github.glassbeat.importer.*
+import io.github.glassbeat.fonts.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Mutex
@@ -19,10 +20,18 @@ import java.io.File
 import java.util.UUID
 
 data class ImportTask(val label: String, val progress: Float = -1f)
+data class FontTask(val id: String, val progress: Float = -1f)
 class LibraryModel(app: Application) : AndroidViewModel(app) {
     val updater = io.github.glassbeat.update.AppUpdater(app, viewModelScope)
     val repository = LibraryRepository(app)
     private val themes = ThemeStore(app)
+    private val fontDownloads = FontDownloads(File(app.filesDir, "fonts/downloaded"), validate = { Typeface.createFromFile(it) })
+    private val fontCacheReady = viewModelScope.async(Dispatchers.IO) { fontDownloads.cleanInterruptedDownloads(); fontDownloads.installed() }
+    var downloadedFonts by mutableStateOf<Set<String>>(emptySet())
+        private set
+    var fontTask by mutableStateOf<FontTask?>(null)
+        private set
+    private var fontJob: Job? = null
     val songs = repository.dao.songs().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     val playlists = repository.dao.playlists().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     val memberships = repository.dao.memberships().stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
@@ -36,6 +45,7 @@ class LibraryModel(app: Application) : AndroidViewModel(app) {
     private val ready = CompletableDeferred<Unit>()
     private val mutation = Mutex()
     init {
+        viewModelScope.launch { downloadedFonts = fontCacheReady.await() }
         viewModelScope.launch {
             try { repository.migrateLegacy(); ready.complete(Unit) }
             catch (e: Exception) { ready.completeExceptionally(e); message = "旧版音乐库迁移失败，原文件已保留：${e.message}" }
@@ -90,11 +100,14 @@ class LibraryModel(app: Application) : AndroidViewModel(app) {
     fun setFont(uri: Uri) = action {
         val target = File(File(getApplication<Application>().filesDir, "fonts").apply { mkdirs() }, "${UUID.randomUUID()}.ttf")
         try {
-            repository.copyUri(uri, target, 10L * 1024 * 1024)
+            repository.copyUri(uri, target, 32L * 1024 * 1024)
             withContext(Dispatchers.IO) { Typeface.createFromFile(target) }
             val old = themes.settings.first().font
             themes.save(themes.settings.first().copy(font = target.absolutePath))
-            if (old.isNotBlank()) withContext(Dispatchers.IO) { File(old).delete() }
+            withContext(NonCancellable) { removeImportedFont(old) }
+        } catch (e: CancellationException) {
+            withContext(NonCancellable) { if (themes.settings.first().font != target.absolutePath) target.delete() }
+            throw e
         } catch (e: Exception) { target.delete(); throw IllegalArgumentException("字体导入失败，请选择有效的 TTF 或 OTF 文件", e) }
     }
     fun clearBackground() = action {
@@ -103,7 +116,39 @@ class LibraryModel(app: Application) : AndroidViewModel(app) {
     }
     fun clearFont() = action {
         val old = themes.settings.first().font; themes.save(themes.settings.first().copy(font = ""))
-        if (old.isNotBlank()) withContext(Dispatchers.IO) { File(old).delete() }
+        removeImportedFont(old)
+    }
+    private suspend fun removeImportedFont(path: String) = withContext(Dispatchers.IO) {
+        if (path.isNotBlank() && File(path).parentFile == File(getApplication<Application>().filesDir, "fonts")) File(path).delete()
+    }
+    fun fontPath(font: DownloadFont) = fontDownloads.file(font).absolutePath
+    fun useDownloadFont(font: DownloadFont) {
+        if (fontJob?.isActive == true) return
+        fontTask = FontTask(font.id)
+        fontJob = viewModelScope.launch {
+            try {
+                fontCacheReady.await()
+                val file = fontDownloads.acquire(font) { fontTask = FontTask(font.id, it) }
+                mutation.withLock {
+                    val current = themes.settings.first()
+                    themes.save(current.copy(font = file.absolutePath))
+                    removeImportedFont(current.font)
+                }
+            } catch (e: CancellationException) { throw e }
+            catch (e: Exception) { message = "字体下载或应用失败：${e.message ?: "请检查网络后重试"}" }
+            finally {
+                withContext(NonCancellable) { downloadedFonts = withContext(Dispatchers.IO) { fontDownloads.installed() } }
+                fontTask = null
+            }
+        }
+    }
+    fun cancelFontDownload() { fontJob?.cancel() }
+    fun deleteDownloadFont(font: DownloadFont) = action {
+        if (fontTask?.id == font.id) return@action
+        val current = themes.settings.first()
+        if (current.font == fontPath(font)) themes.save(current.copy(font = ""))
+        withContext(Dispatchers.IO) { fontDownloads.delete(font) }
+        downloadedFonts = withContext(Dispatchers.IO) { fontDownloads.installed() }
     }
     fun receive(intent: Intent?) {
         if (intent == null) return

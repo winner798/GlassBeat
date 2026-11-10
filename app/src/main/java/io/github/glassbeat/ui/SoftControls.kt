@@ -11,6 +11,7 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -41,22 +42,22 @@ private fun pressFeedback(onClick: () -> Unit): PressFeedback {
 }
 
 @Composable
-internal fun SoftIconButton(onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, content: @Composable () -> Unit) {
+internal fun SoftIconButton(onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, framed: Boolean = true, content: @Composable () -> Unit) {
     val press = pressFeedback(onClick)
-    IconButton(press.click, modifier.then(press.modifier).controlSkin(), enabled = enabled, interactionSource = press.source, content = content)
+    IconButton(press.click, modifier.then(press.modifier).then(if (framed) Modifier.controlSkin(CircleShape) else Modifier), enabled = enabled, interactionSource = press.source, content = content)
 }
 
 @Composable
 internal fun SoftFilledIconButton(onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, content: @Composable () -> Unit) {
     val press = pressFeedback(onClick)
-    FilledIconButton(press.click, modifier.then(press.modifier).controlSkin(), enabled = enabled, shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp), interactionSource = press.source, content = content)
+    FilledIconButton(press.click, modifier.then(press.modifier).controlSkin(CircleShape), enabled = enabled, shape = CircleShape, interactionSource = press.source, content = content)
 }
 
 @Composable
 internal fun SoftFilledTonalIconButton(onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true,
     colors: IconButtonColors = IconButtonDefaults.filledTonalIconButtonColors(), content: @Composable () -> Unit) {
     val press = pressFeedback(onClick)
-    FilledTonalIconButton(press.click, modifier.then(press.modifier).controlSkin(), enabled = enabled, shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp), colors = colors, interactionSource = press.source, content = content)
+    FilledTonalIconButton(press.click, modifier.then(press.modifier).controlSkin(CircleShape), enabled = enabled, shape = CircleShape, colors = colors, interactionSource = press.source, content = content)
 }
 
 @Composable
@@ -69,14 +70,14 @@ internal fun SoftButton(onClick: () -> Unit, modifier: Modifier = Modifier, enab
 @Composable
 internal fun SoftOutlinedButton(onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, content: @Composable RowScope.() -> Unit) {
     val press = pressFeedback(onClick)
-    OutlinedButton(press.click, modifier.then(press.modifier).controlSkin(), enabled = enabled, shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp), interactionSource = press.source, content = content)
+    OutlinedButton(press.click, modifier.then(press.modifier).controlSkin(), enabled = enabled, border = null, shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp), interactionSource = press.source, content = content)
 }
 
 @Composable
 internal fun SoftTextButton(onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true,
     colors: ButtonColors = ButtonDefaults.textButtonColors(), content: @Composable RowScope.() -> Unit) {
     val press = pressFeedback(onClick)
-    TextButton(press.click, modifier.then(press.modifier).controlSkin(), enabled = enabled, shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp), colors = colors, interactionSource = press.source, content = content)
+    TextButton(press.click, modifier.then(press.modifier), enabled = enabled, shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp), colors = colors, interactionSource = press.source, content = content)
 }
 
 @Composable

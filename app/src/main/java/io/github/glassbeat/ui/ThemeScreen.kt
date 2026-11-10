@@ -22,6 +22,7 @@ fun ThemeScreen(theme: ThemeSettings, model: LibraryModel) {
     var opacity by remember(theme.opacity) { mutableFloatStateOf(theme.opacity) }
     var blur by remember(theme.blur) { mutableFloatStateOf(theme.blur) }
     val uriHandler = LocalUriHandler.current
+    var fontLibrary by remember { mutableStateOf(false) }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(16.dp)) {
         GlassPanel {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -59,8 +60,9 @@ fun ThemeScreen(theme: ThemeSettings, model: LibraryModel) {
         GlassPanel {
             Column(Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("字体与动效", style = MaterialTheme.typography.titleMedium)
-                SoftOutlinedButton(onClick = { font.launch(arrayOf("font/*", "application/x-font-ttf", "application/x-font-opentype", "application/octet-stream")) }, modifier = Modifier.fillMaxWidth()) { Text(if (theme.font.isBlank()) "导入 TTF / OTF 字体" else "更换自定义字体") }
-                if (theme.font.isNotBlank()) SoftTextButton(onClick = model::clearFont) { Text("恢复系统字体") }
+                SoftOutlinedButton(onClick = { fontLibrary = true }, modifier = Modifier.fillMaxWidth()) { Text(if (model.fontTask != null) "字体下载中…" else "发现字体 · 按需下载") }
+                SoftOutlinedButton(onClick = { font.launch(arrayOf("font/*", "application/x-font-ttf", "application/x-font-opentype", "application/octet-stream")) }, enabled = model.fontTask == null, modifier = Modifier.fillMaxWidth()) { Text(if (theme.font.isBlank()) "导入 TTF / OTF 字体" else "更换自定义字体") }
+                if (theme.font.isNotBlank()) SoftTextButton(onClick = model::clearFont, enabled = model.fontTask == null) { Text("恢复系统字体") }
                 Row(verticalAlignment = Alignment.CenterVertically) { Column(Modifier.weight(1f)) { Text("流动背景与交互动效"); Text("低性能模式下自动关闭", style = MaterialTheme.typography.bodySmall) }; Switch(theme.motion, { model.updateTheme { current -> current.copy(motion = it) } }, enabled = !theme.lowPower) }
                 Row(verticalAlignment = Alignment.CenterVertically) { Column(Modifier.weight(1f)) { Text("低性能模式"); Text("关闭实时模糊与背景动画", style = MaterialTheme.typography.bodySmall) }; Switch(theme.lowPower, { model.updateTheme { current -> current.copy(lowPower = it) } }) }
             }
@@ -70,12 +72,13 @@ fun ThemeScreen(theme: ThemeSettings, model: LibraryModel) {
                 Text("FavSoda ${model.updater.installedVersion}", style = MaterialTheme.typography.titleMedium)
                 SoftButton(onClick = model.updater::check, modifier = Modifier.fillMaxWidth()) { Text("检查更新") }
                 Text("无账号 · 无广告 · 无自建服务器", style = MaterialTheme.typography.bodyMedium)
-                Text("本地音乐始终保存在设备。仅在解析分享、下载媒体或主动检查更新时联网，不上传音乐库。卸载会清除应用内音乐，请先导出重要文件。", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("本地音乐始终保存在设备。仅在解析分享、下载媒体或字体、主动检查更新时联网，不上传音乐库。卸载会清除应用内音乐，请先导出重要文件。", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 SoftTextButton(onClick = { uriHandler.openUri("https://github.com/winner798/GlassBeat") }) { Text("源码、隐私说明与开源许可 ↗") }
             }
         }
         Spacer(Modifier.height(16.dp))
     }
+    if (fontLibrary) DownloadFontsSheet(theme, model) { fontLibrary = false }
 }
 
 @Composable
