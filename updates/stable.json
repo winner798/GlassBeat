@@ -1,12 +1,12 @@
 {
   "packageName": "io.github.glassbeat",
-  "version": "1.0.10",
-  "size": 2798991,
-  "sha256": "8ff486915c30044adebf0a4f31c9cbc8fe2c1dba49e8f485125c733faf0a91e2",
-  "notes": "FavSoda 1.0.10：修复播放队列顺序和媒体信息同步。\n\n- 随机播放时，队列按播放器的实际顺序显示；重排后点击播放、移出歌曲和定位当前项目均映射到正确位置。\n- 编辑封面、标题等资料后同步更新现有播放队列，保留歌曲来源、当前播放位置和随机顺序。\n- 完善二级面板截图验收，捕获实际弹出的队列、导入及歌曲菜单。\n\n验证：26 项 JVM 测试、静态检查，Android 10 / Android 15 各 23 项设备测试通过；新增固定随机顺序、重排操作和媒体资料更新回归。\n\n包含此前的气泡字标、统一玻璃按钮与浅色应用图标。\n\n更新：应用内“外观 → 检查更新”，或下载 FavSoda-v1.0.10.apk 覆盖安装，保留已有音乐库。\n\nGlassBeat-v1.0.10.apk 为旧版更新器使用的同内容兼容文件。\n",
+  "version": "1.0.11",
+  "size": 2803444,
+  "sha256": "dca327574468c13584ce7914af46c0e28b93e4d2e96cb893dae64e40962ef643",
+  "notes": "本版统一页面标题样式，增加视频封面导入，并减少播放期间的重复计算。\n\n- 「你的歌单」「外观工作室」采用配套中文展示字体，与 FavSoda 字标共用渐变、高光和立体投影。\n- 抖音分享导入优先保存视频封面到音乐库；封面不可用时尝试从已下载视频提取画面。本地视频也支持取帧封面，封面失败不阻断音频保存。\n- 限制封面下载大小、解码像素和最终尺寸；取消或导入失败时清理临时文件。\n- 缓存歌曲筛选结果，使用集合匹配歌单，减少暂停时的位置刷新，队列资料仅在实际变化时更新。\n- 补充中文字体授权与来源说明。\n\n验证：27 项 JVM 单元测试、Android 10 与 Android 15 各 25 项设备测试、Release Lint 及签名 APK 构建通过。测试覆盖视频提取后的封面持久化、异常回退与删除清理。尚未对所有机型进行帧率测试。\n\n安装 FavSoda-v1.0.11.apk 即可；已有用户可在「外观 → 检查更新」覆盖安装，保留音乐库。封面保存在应用音乐库中，导出音频不会额外写入封面标签。旧版本 updater 所需的 GlassBeat 文件名保留为同一安装包的兼容副本。\n",
   "downloadUrls": [
-    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.10/dist/GlassBeat-v1.0.10.apk",
-    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/716979040",
-    "https://github.com/winner798/GlassBeat/releases/download/v1.0.10/GlassBeat-v1.0.10.apk"
+    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.11/dist/GlassBeat-v1.0.11.apk",
+    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/730070634",
+    "https://github.com/winner798/GlassBeat/releases/download/v1.0.11/GlassBeat-v1.0.11.apk"
   ]
 }
