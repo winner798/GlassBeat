@@ -11,12 +11,12 @@ internal fun syncQueueMetadata(player: Player?, songs: List<Song>) {
         val item = player.getMediaItemAt(index)
         val song = byId[item.mediaId] ?: continue
         val old = item.mediaMetadata
-        val updated = song.mediaItem().mediaMetadata
-        if (old.title?.toString() != updated.title?.toString() ||
-            old.artist?.toString() != updated.artist?.toString() ||
-            old.artworkUri != updated.artworkUri ||
+        val artwork = song.cover.takeIf { it.isNotBlank() }?.let { android.net.Uri.fromFile(java.io.File(it)) }
+        if (old.title?.toString() != song.title ||
+            old.artist?.toString() != song.artist ||
+            old.artworkUri != artwork ||
             old.extras?.getLong("durationMs") != song.durationMs) {
-            player.replaceMediaItem(index, item.buildUpon().setMediaMetadata(updated).build())
+            player.replaceMediaItem(index, item.buildUpon().setMediaMetadata(song.mediaItem().mediaMetadata).build())
         }
     }
 }

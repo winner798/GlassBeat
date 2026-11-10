@@ -7,6 +7,11 @@ import java.net.URLEncoder
 
 class DouyinParserTest {
     private val item = """{"aweme_detail":{"desc":"A title with {braces} and \"quotes\"","video":{"duration":12000,"play_addr":{"url_list":["https://v3.douyinvod.com/test.mp4"]}}}}"""
+    @Test fun parsesPosterWithoutRequiringItForAudioImport() {
+        val withPoster = item.replace("\"duration\":12000", "\"cover\":{\"url_list\":[\"https://p3.example.com/cover.jpg\"]},\"duration\":12000")
+        assertEquals("https://p3.example.com/cover.jpg", DouyinPageParser.parse(withPoster, "https://www.douyin.com/video/123")!!.coverUrl)
+        assertNull(DouyinPageParser.parse(item, "https://www.douyin.com/video/123")!!.coverUrl)
+    }
     @Test fun extractsUrlFromChineseShareText() {
         assertEquals("https://v.douyin.com/ABC/", DouyinPageParser.sharedUrl("3.14 复制链接 https://v.douyin.com/ABC/ 打开抖音"))
     }

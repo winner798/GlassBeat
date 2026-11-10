@@ -25,8 +25,8 @@ fun rememberPlayback(player: MediaController?, onError: (String) -> Unit): Playb
     }
     LaunchedEffect(player) {
         while (true) {
-            state = player.playbackUi()
             delay(400)
+            if (player?.isPlaying == true) state = state.copy(position = player.currentPosition.coerceAtLeast(0), duration = player.duration.coerceAtLeast(0))
         }
     }
     return state

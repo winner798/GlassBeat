@@ -24,23 +24,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.glassbeat.R
 
+private val ChineseBubbleFamily = FontFamily(Font(R.font.favsoda_bubble_cjk))
 private val BubbleFamily = FontFamily(Font(R.font.favsoda_bubble, FontWeight.Bold))
 
 /** Static layered lettering: one accessible brand label, no continuous animation. */
 @Composable
-internal fun BrandWordmark(modifier: Modifier = Modifier) {
+internal fun BrandWordmark(modifier: Modifier = Modifier, text: String = "FavSoda") {
     val appearance = LocalAppearance.current
     val primary = MaterialTheme.colorScheme.primary
     val surfaceText = MaterialTheme.colorScheme.onSurface
     val density = LocalDensity.current
     val face = if (appearance.light) listOf(lerp(primary, surfaceText, .65f), lerp(primary, surfaceText, .85f), lerp(primary, surfaceText, .55f))
         else listOf(Color.White, lerp(primary, Color.White, .80f), lerp(primary, Color.White, .32f))
-    val style = TextStyle(fontFamily = BubbleFamily, fontWeight = FontWeight.Bold, fontSize = 38.sp, lineHeight = 44.sp, letterSpacing = .2.sp)
+    val style = TextStyle(fontFamily = if (text == "FavSoda") BubbleFamily else ChineseBubbleFamily, fontWeight = FontWeight.Bold, fontSize = if (text == "FavSoda") 38.sp else 32.sp, lineHeight = 44.sp, letterSpacing = .2.sp)
     Box(modifier) {
-        Text("FavSoda", modifier = Modifier.offset(y = 1.6.dp).clearAndSetSemantics {},
+        Text(text, modifier = Modifier.offset(y = 1.6.dp).clearAndSetSemantics {},
             style = style, color = lerp(primary, Color.Black, if (appearance.light) .26f else .55f).copy(alpha = .46f),
             maxLines = 1, overflow = TextOverflow.Ellipsis)
-        Text("FavSoda", modifier = Modifier.semantics { heading() },
+        Text(text, modifier = Modifier.semantics { heading() },
             style = style.copy(brush = Brush.verticalGradient(face),
                 shadow = if (appearance.lowPower) null else Shadow(Color.Black.copy(alpha = if (appearance.light) .14f else .30f),
                     Offset(0f, with(density) { 1.dp.toPx() }), with(density) { 2.dp.toPx() })),

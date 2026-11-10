@@ -46,11 +46,11 @@ class LibraryRepository(private val context: Context) {
         val input = context.contentResolver.openInputStream(uri) ?: error("无法读取文件")
         input.use { src -> target.outputStream().use { copyCancellable(src, it, maxBytes) } }
     }
-    suspend fun commitAudio(file: File, fallback: String, source: String): Song = withContext(Dispatchers.IO) {
+    suspend fun commitAudio(file: File, fallback: String, source: String, coverOverride: String = ""): Song = withContext(Dispatchers.IO) {
         require(file.length() > 0) { "音频文件为空" }
         val id = UUID.randomUUID().toString()
         val meta = MediaMetadataRetriever()
-        var cover = ""
+        var cover = coverOverride
         try {
             meta.setDataSource(file.absolutePath)
             require(meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_HAS_AUDIO) == "yes") { "文件中没有可识别的音轨" }
@@ -58,7 +58,7 @@ class LibraryRepository(private val context: Context) {
             val artist = meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST)?.takeIf { it.isNotBlank() } ?: "本地音乐"
             val duration = meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 0
             val mime = meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE) ?: "audio/mpeg"
-            meta.embeddedPicture?.takeIf { it.size <= 12 * 1024 * 1024 }?.let { bytes ->
+            if (cover.isBlank()) meta.embeddedPicture?.takeIf { it.size <= 12 * 1024 * 1024 }?.let { bytes ->
                 val target = File(File(context.filesDir, "covers").apply { mkdirs() }, "$id.jpg")
                 target.writeBytes(bytes); cover = target.absolutePath
             }

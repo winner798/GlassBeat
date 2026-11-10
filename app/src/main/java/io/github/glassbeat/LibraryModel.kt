@@ -168,10 +168,15 @@ class LibraryModel(app: Application) : AndroidViewModel(app) {
         } catch (e: Exception) { repository.discardIfUnreferenced(output); throw e }
         finally { input.delete() }
     }
-    private suspend fun extractAndSave(input: File, output: File, name: String, source: String) {
+    private suspend fun extractAndSave(input: File, output: File, name: String, source: String, coverUrl: String? = null) {
         _task.value = ImportTask("正在提取音轨…", 0f)
         AudioExtractor(getApplication()).extract(Uri.fromFile(input), output) { _task.value = ImportTask("正在提取音轨…", it / 100f) }
-        repository.commitAudio(output, name, source)
+        val cover = io.github.glassbeat.importer.VideoArtwork(getApplication()).save(input, coverUrl)
+        try { repository.commitAudio(output, name, source, cover?.absolutePath.orEmpty()) }
+        catch (e: Exception) {
+            withContext(NonCancellable + Dispatchers.IO) { if (repository.dao.references(output.path) == 0) cover?.delete() }
+            throw e
+        }
     }
     fun savePreview() {
         val item = preview ?: return
@@ -181,7 +186,7 @@ class LibraryModel(app: Application) : AndroidViewModel(app) {
             try {
                 _task.value = ImportTask("正在下载视频音轨…")
                 MediaNetwork().download(item.mediaUrl, input) { _task.value = ImportTask("正在下载视频…", it) }
-                extractAndSave(input, output, item.title, "抖音分享")
+                extractAndSave(input, output, item.title, "抖音分享", item.coverUrl)
                 preview = null; message = "音轨已保存到音乐库"
             } catch (e: Exception) { repository.discardIfUnreferenced(output); throw e }
             finally { input.delete() }

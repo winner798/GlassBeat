@@ -75,13 +75,13 @@ class MediaNetwork(
             Page(bytes.toString("UTF-8"), connection.url.toString())
         } finally { connection.disconnect() }
     }
-    suspend fun download(url: String, target: File, progress: (Float) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun download(url: String, target: File, maxBytes: Long = 2L * 1024 * 1024 * 1024, progress: (Float) -> Unit) = withContext(Dispatchers.IO) {
         val connection = connect(url, false)
         try {
             val total = connection.contentLengthLong
-            require(total <= 2L * 1024 * 1024 * 1024) { "媒体文件过大，请改用本地视频" }
+            require(total <= maxBytes) { "媒体文件过大，请改用本地视频" }
             connection.inputStream.use { input -> target.outputStream().use { output ->
-                copyCancellable(input, output, 2L * 1024 * 1024 * 1024) { bytes -> progress(if (total > 0) bytes.toFloat() / total else -1f) }
+                copyCancellable(input, output, maxBytes) { bytes -> progress(if (total > 0) bytes.toFloat() / total else -1f) }
             } }
         } catch (e: Exception) { target.delete(); throw e }
         finally { connection.disconnect() }

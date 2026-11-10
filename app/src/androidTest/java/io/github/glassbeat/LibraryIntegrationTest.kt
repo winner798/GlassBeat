@@ -73,13 +73,21 @@ class LibraryIntegrationTest {
                 assertTrue(retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_DURATION)!!.toLong() > 500)
             } finally { retriever.release() }
             val repo = LibraryRepository(context)
-            val song = repo.commitAudio(output, "Extracted test", "设备测试")
+            val cover = io.github.glassbeat.importer.VideoArtwork(context).save(input)
+            assertNotNull(cover)
+            val song = repo.commitAudio(output, "Extracted test", "设备测试", cover!!.path)
+            assertEquals(cover.path, song.cover)
+            val coverBitmap = android.graphics.BitmapFactory.decodeFile(song.cover)
+            assertNotNull(coverBitmap)
+            assertTrue(maxOf(coverBitmap.width, coverBitmap.height) <= 720)
+            coverBitmap.recycle()
             val exported = File(context.cacheDir, "exported-test.m4a")
             try {
                 repo.export(song, Uri.fromFile(exported))
                 assertArrayEquals(output.readBytes(), exported.readBytes())
                 repo.delete(song)
                 assertFalse(output.exists())
+                assertFalse(cover.exists())
                 assertTrue(input.exists())
             } finally { repo.dao.delete(song.id); exported.delete() }
         } finally { input.delete(); output.delete() }

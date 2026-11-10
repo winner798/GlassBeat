@@ -8,7 +8,7 @@ import org.json.JSONObject
 import java.net.URI
 import java.net.URLDecoder
 
-data class ImportPreview(val title: String, val durationMs: Long, val mediaUrl: String, val sourceUrl: String)
+data class ImportPreview(val title: String, val durationMs: Long, val mediaUrl: String, val sourceUrl: String, val coverUrl: String? = null)
 
 /** Parses only public response data. It never executes scripts or attempts login challenges. */
 object DouyinPageParser {
@@ -42,7 +42,8 @@ object DouyinPageParser {
                 val media = raw?.replace("http://", "https://") ?: return@let
                 if (runCatching { URI(media).scheme == "https" && !URI(media).host.isNullOrBlank() }.getOrDefault(false)) {
                     return ImportPreview(item.optString("desc").ifBlank { item.optString("description", "抖音视频音轨") }.take(200),
-                        video.optLong("duration", item.optLong("duration", 0)), media, source)
+                        video.optLong("duration", item.optLong("duration", 0)), media, source, listOf("origin_cover", "cover", "dynamic_cover").firstNotNullOfOrNull { key ->
+                            video.optJSONObject(key)?.optJSONArray("url_list")?.optString(0)?.takeIf { it.startsWith("https://") } })
                 }
             }
         }

@@ -84,9 +84,11 @@ fun FavSodaApp(model: LibraryModel, player: MediaController?) {
     }
     val haze = remember { HazeState() }
     val selectedPlaylist = playlists.firstOrNull { it.id == playlistId }
-    val visible = songs.filter { song ->
-        (!favorites || tab != 0 || song.favorite) && (tab != 1 || playlistId == null || memberships.any { it.playlistId == playlistId && it.songId == song.id }) &&
-            (song.title.contains(query, true) || song.artist.contains(query, true))
+    val memberIds = remember(memberships, playlistId) { memberships.filter { it.playlistId == playlistId }.mapTo(HashSet()) { it.songId } }
+    val visible = remember(songs, favorites, tab, playlistId, memberIds, query) {
+        songs.filter { song -> (!favorites || tab != 0 || song.favorite) &&
+            (tab != 1 || playlistId == null || song.id in memberIds) &&
+            (song.title.contains(query, true) || song.artist.contains(query, true)) }
     }
     BackHandler(full || selectedPlaylist != null) { if (full) full = false else playlistId = null }
     MaterialTheme(colorScheme = colors, typography = typography) {
@@ -101,7 +103,8 @@ fun FavSodaApp(model: LibraryModel, player: MediaController?) {
                             Row(Modifier.padding(top = 22.dp, bottom = 18.dp), verticalAlignment = Alignment.CenterVertically) {
                                 Column(Modifier.weight(1f)) {
                                     if (tab == 0) BrandWordmark()
-                                    else Text(if (tab == 1) selectedPlaylist?.name ?: "你的歌单" else "外观工作室", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
+                                    else if (tab == 1 && selectedPlaylist != null) Text(selectedPlaylist.name, style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
+                                    else BrandWordmark(text = if (tab == 1) "你的歌单" else "外观工作室")
                                     Text(if (tab == 2) "让音乐拥有你的样子" else "离线收藏 · 自由聆听", color = colors.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
                                 }
                                 if (selectedPlaylist != null && tab == 1) SoftIconButton(onClick = { playlistId = null }) { Icon(Icons.Rounded.ArrowBack, "返回歌单") }
