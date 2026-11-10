@@ -33,6 +33,9 @@ class UiSmokeTest {
         compose.mainClock.advanceTimeBy(500)
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         instrumentation.waitForIdleSync()
+        // Compose's test clock does not advance SurfaceFlinger. Allow the real frame
+        // to present before taking a compositor screenshot after navigation/dialogs.
+        Thread.sleep(300)
         // Capture the composed window, including the separate font sheet dialog.
         val screenshot = checkNotNull(instrumentation.uiAutomation.takeScreenshot())
         val bitmap = screenshot.copy(Bitmap.Config.ARGB_8888, false)
