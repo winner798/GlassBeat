@@ -1,6 +1,7 @@
 package io.github.glassbeat.fonts
 
-import io.github.glassbeat.importer.MediaNetwork
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
@@ -13,7 +14,17 @@ import kotlin.coroutines.coroutineContext
 class FontDownloads(
     private val root: File,
     private val transfer: suspend (String, File, Long, (Float) -> Unit) -> Unit = { url, file, limit, progress ->
-        MediaNetwork().download(url, file, limit, progress)
+        try { withTimeout(90_000) {
+            try { FontTransfer.download(url, file, limit, progress) }
+            catch (e: CancellationException) { throw e }
+            catch (e: Exception) {
+                file.delete()
+                val fallback = url.replace("https://raw.githubusercontent.com/google/fonts/", "https://cdn.jsdelivr.net/gh/google/fonts@")
+                FontTransfer.download(fallback, file, limit, progress)
+            }
+        } } catch (e: kotlinx.coroutines.TimeoutCancellationException) {
+            throw java.io.IOException("字体下载超时，请检查网络后重试", e)
+        }
     },
     private val validate: (File) -> Unit
 ) {
