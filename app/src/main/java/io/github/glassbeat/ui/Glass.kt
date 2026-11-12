@@ -47,8 +47,8 @@ fun GlassPanel(modifier: Modifier = Modifier, subtle: Boolean = false, content: 
             val radius = minOf(28.dp.toPx(), size.minDimension * .5f)
             val reflection = Brush.radialGradient(listOf(Color.White.copy(alpha = if (subtle) .045f else if (t.light) .19f else .10f), Color.Transparent),
                 center = Offset(size.width * .08f, 0f), radius = size.width.coerceAtLeast(1f) * .85f)
-            val edge = Brush.linearGradient(listOf(Color.White.copy(alpha = if (subtle) .34f else .80f), Color.White.copy(alpha = if (subtle) .06f else .18f),
-                Color.White.copy(alpha = .025f), Color.White.copy(alpha = if (subtle) .16f else .48f)))
+            val edge = Brush.linearGradient(listOf(Color.White.copy(alpha = if (subtle) .30f else .58f), Color.White.copy(alpha = if (subtle) .06f else .18f),
+                Color.White.copy(alpha = .025f), Color.White.copy(alpha = if (subtle) .14f else .32f)))
             onDrawWithContent {
                 drawRect(reflection)
                 drawContent()

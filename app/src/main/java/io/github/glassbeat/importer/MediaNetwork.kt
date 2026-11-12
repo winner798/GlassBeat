@@ -27,11 +27,12 @@ class MediaNetwork(
             else requireRemoteMediaHost(host)
             val connection = openConnection(current)
             connection.instanceFollowRedirects = false
-            connection.connectTimeout = 15000; connection.readTimeout = 20000
+            connection.connectTimeout = if (page) 5000 else 15000
+            connection.readTimeout = if (page) 8000 else 20000
             connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
             connection.setRequestProperty("Referer", "https://www.douyin.com/")
             cookies[host]?.let { connection.setRequestProperty("Cookie", it) }
-            val code = connection.responseCode
+            val code = try { connection.responseCode } catch (e: Exception) { connection.disconnect(); throw e }
             connection.headerFields.filterKeys { it?.equals("Set-Cookie", true) == true }.values.flatten().takeIf { it.isNotEmpty() }?.let {
                 cookies[host] = it.joinToString("; ") { cookie -> cookie.substringBefore(';') }
             }

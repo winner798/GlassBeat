@@ -4,6 +4,7 @@ import android.view.HapticFeedbackConstants
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.snap
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -31,8 +32,8 @@ private fun pressFeedback(onClick: () -> Unit): PressFeedback {
     val pressed by source.collectIsPressedAsState()
     val appearance = LocalAppearance.current
     val animate = appearance.motion && !appearance.lowPower
-    val scale = animateFloatAsState(if (pressed && animate) .96f else 1f,
-        animationSpec = if (animate) spring(dampingRatio = .78f, stiffness = 650f) else snap(), label = "soft-press")
+    val scale = animateFloatAsState(if (pressed && animate) .94f else 1f,
+        animationSpec = if (!animate) snap() else if (pressed) tween(80) else spring(dampingRatio = .82f, stiffness = 520f), label = "soft-press")
     val view = LocalView.current
     return PressFeedback(source, Modifier.graphicsLayer { scaleX = scale.value; scaleY = scale.value }) {
         // Honor the device's touch-feedback setting. Only completed clicks tick, never scrubbing.
