@@ -1,12 +1,12 @@
 {
   "packageName": "io.github.glassbeat",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "size": 2819828,
-  "sha256": "0f66c9f2e75bf6680ce0268e2c60eb77663d1ae50eaeb91a32b719f46b18653b",
-  "notes": "优化按键反馈、分享页面请求等待和玻璃边缘质感。\n\n- 按下采用 80ms 响应，松手以弹簧动画回弹，保留系统触感设置与低性能模式。\n- 分享页面连接超时调整为 5 秒、读取超时为 8 秒；媒体下载仍保留较长超时。请求异常时及时关闭连接。\n- 降低玻璃描边亮度，保留渐变反光，减轻白框感。\n\n安装 FavSoda-v1.0.14.apk，或通过「外观 → 检查更新」覆盖升级。沿用原签名，保留本地音乐库。\n\n解析成功率仍受抖音资源可访问性影响；本版未对真实链接的平均耗时或全机型帧率作提升承诺。\n",
+  "sha256": "6435694d3a6b118983a4041ef266ccd579dab3cf5b12cb21599e2e258789d453",
+  "notes": "修复字体下载与停止下载。\n\n- 停止下载会主动断开阻塞中的连接，清理临时文件，保留当前字体。\n- GitHub 主源请求失败时，尝试 jsDelivr 的同版本文件；仍校验字体大小、SHA-256 与许可证摘要。\n- 增加下载总超时及重试提示，修正下载线程的文件清理与完成通知顺序。\n\n验证：34 项单元测试及静态检查通过，新增阻塞读取取消、下载成功后文件保留的专项测试。\n\n安装 FavSoda-v1.0.15.apk，或通过「外观 → 检查更新」覆盖升级，保留音乐库。字体仍按需下载，不内置完整字体。\n",
   "downloadUrls": [
-    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.14/dist/GlassBeat-v1.0.14.apk",
-    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/740262678",
-    "https://github.com/winner798/GlassBeat/releases/download/v1.0.14/GlassBeat-v1.0.14.apk"
+    "https://raw.githubusercontent.com/winner798/GlassBeat/release-artifacts/v1.0.15/dist/GlassBeat-v1.0.15.apk",
+    "https://api.github.com/repos/winner798/GlassBeat/releases/assets/740324794",
+    "https://github.com/winner798/GlassBeat/releases/download/v1.0.15/GlassBeat-v1.0.15.apk"
   ]
 }
